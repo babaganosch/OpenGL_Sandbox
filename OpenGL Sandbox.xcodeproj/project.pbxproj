@@ -8,6 +8,12 @@
 
 /* Begin PBXBuildFile section */
 		46100CD5246D980F004204A6 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 46100CD4246D980F004204A6 /* main.cpp */; };
+		46100CDD246D988F004204A6 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 46100CDC246D988F004204A6 /* OpenGL.framework */; };
+		46100CDF246D98E5004204A6 /* libGLEW.2.1.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 46100CDE246D98E5004204A6 /* libGLEW.2.1.0.dylib */; };
+		46100CE1246D9920004204A6 /* libglfw.3.3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 46100CE0246D9920004204A6 /* libglfw.3.3.dylib */; };
+		46100CE5247447D1004204A6 /* Mesh.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 46100CE3247447D1004204A6 /* Mesh.cpp */; };
+		46100CE824757999004204A6 /* Shader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 46100CE624757999004204A6 /* Shader.cpp */; };
+		46100CEF247592FE004204A6 /* Window.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 46100CED247592FE004204A6 /* Window.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -25,6 +31,18 @@
 /* Begin PBXFileReference section */
 		46100CD1246D980F004204A6 /* OpenGL Sandbox */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "OpenGL Sandbox"; sourceTree = BUILT_PRODUCTS_DIR; };
 		46100CD4246D980F004204A6 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		46100CDC246D988F004204A6 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
+		46100CDE246D98E5004204A6 /* libGLEW.2.1.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libGLEW.2.1.0.dylib; path = ../../../../usr/local/Cellar/glew/2.1.0_1/lib/libGLEW.2.1.0.dylib; sourceTree = "<group>"; };
+		46100CE0246D9920004204A6 /* libglfw.3.3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libglfw.3.3.dylib; path = ../../../../usr/local/Cellar/glfw/3.3.2/lib/libglfw.3.3.dylib; sourceTree = "<group>"; };
+		46100CE2246D9C9F004204A6 /* OpenGL Sandbox.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "OpenGL Sandbox.entitlements"; sourceTree = "<group>"; };
+		46100CE3247447D1004204A6 /* Mesh.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Mesh.cpp; sourceTree = "<group>"; };
+		46100CE4247447D1004204A6 /* Mesh.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Mesh.hpp; sourceTree = "<group>"; };
+		46100CE624757999004204A6 /* Shader.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Shader.cpp; sourceTree = "<group>"; };
+		46100CE724757999004204A6 /* Shader.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Shader.hpp; sourceTree = "<group>"; };
+		46100CE9247583FC004204A6 /* shader.frag */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; name = shader.frag; path = Shaders/shader.frag; sourceTree = "<group>"; };
+		46100CEA247583FD004204A6 /* shader.vert */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; name = shader.vert; path = Shaders/shader.vert; sourceTree = "<group>"; };
+		46100CED247592FE004204A6 /* Window.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Window.cpp; sourceTree = "<group>"; };
+		46100CEE247592FE004204A6 /* Window.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Window.hpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -32,6 +50,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				46100CE1246D9920004204A6 /* libglfw.3.3.dylib in Frameworks */,
+				46100CDF246D98E5004204A6 /* libGLEW.2.1.0.dylib in Frameworks */,
+				46100CDD246D988F004204A6 /* OpenGL.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -43,6 +64,7 @@
 			children = (
 				46100CD3246D980F004204A6 /* OpenGL Sandbox */,
 				46100CD2246D980F004204A6 /* Products */,
+				46100CDB246D988F004204A6 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -57,9 +79,36 @@
 		46100CD3246D980F004204A6 /* OpenGL Sandbox */ = {
 			isa = PBXGroup;
 			children = (
+				46100CEC247590CB004204A6 /* Shaders */,
+				46100CE2246D9C9F004204A6 /* OpenGL Sandbox.entitlements */,
 				46100CD4246D980F004204A6 /* main.cpp */,
+				46100CE3247447D1004204A6 /* Mesh.cpp */,
+				46100CE4247447D1004204A6 /* Mesh.hpp */,
+				46100CE624757999004204A6 /* Shader.cpp */,
+				46100CE724757999004204A6 /* Shader.hpp */,
+				46100CED247592FE004204A6 /* Window.cpp */,
+				46100CEE247592FE004204A6 /* Window.hpp */,
 			);
 			path = "OpenGL Sandbox";
+			sourceTree = "<group>";
+		};
+		46100CDB246D988F004204A6 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				46100CE0246D9920004204A6 /* libglfw.3.3.dylib */,
+				46100CDE246D98E5004204A6 /* libGLEW.2.1.0.dylib */,
+				46100CDC246D988F004204A6 /* OpenGL.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		46100CEC247590CB004204A6 /* Shaders */ = {
+			isa = PBXGroup;
+			children = (
+				46100CE9247583FC004204A6 /* shader.frag */,
+				46100CEA247583FD004204A6 /* shader.vert */,
+			);
+			name = Shaders;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -119,7 +168,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				46100CE5247447D1004204A6 /* Mesh.cpp in Sources */,
+				46100CE824757999004204A6 /* Shader.cpp in Sources */,
 				46100CD5246D980F004204A6 /* main.cpp in Sources */,
+				46100CEF247592FE004204A6 /* Window.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -238,9 +290,16 @@
 		46100CD9246D980F004204A6 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = "OpenGL Sandbox/OpenGL Sandbox.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 2786ERZGHU;
 				ENABLE_HARDENED_RUNTIME = YES;
+				HEADER_SEARCH_PATHS = /usr/local/include;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					/usr/local/Cellar/glew/2.1.0_1/lib,
+					/usr/local/Cellar/glfw/3.3.2/lib,
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -248,9 +307,16 @@
 		46100CDA246D980F004204A6 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = "OpenGL Sandbox/OpenGL Sandbox.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 2786ERZGHU;
 				ENABLE_HARDENED_RUNTIME = YES;
+				HEADER_SEARCH_PATHS = /usr/local/include;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					/usr/local/Cellar/glew/2.1.0_1/lib,
+					/usr/local/Cellar/glfw/3.3.2/lib,
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
