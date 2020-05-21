@@ -25,7 +25,7 @@ Window mainWindow;
 vector<Mesh*> meshList;
 vector<Shader> shaderList;
 
-// Vertex Shader
+// Vertex Shader	
 static const char* vShader = "./Shaders/shader.vert";
 
 // Fragment Shader
