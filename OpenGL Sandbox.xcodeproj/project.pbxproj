@@ -15,6 +15,8 @@
 		46100CE824757999004204A6 /* Shader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 46100CE624757999004204A6 /* Shader.cpp */; };
 		46100CEF247592FE004204A6 /* Window.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 46100CED247592FE004204A6 /* Window.cpp */; };
 		46100CF2247977E4004204A6 /* Camera.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 46100CF0247977E4004204A6 /* Camera.cpp */; };
+		46100CF7247A8B5A004204A6 /* Texture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 46100CF5247A8B5A004204A6 /* Texture.cpp */; };
+		4647CFC7247AD88F00239DC5 /* Light.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4647CFC5247AD88F00239DC5 /* Light.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -46,6 +48,11 @@
 		46100CEE247592FE004204A6 /* Window.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Window.hpp; sourceTree = "<group>"; };
 		46100CF0247977E4004204A6 /* Camera.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Camera.cpp; sourceTree = "<group>"; };
 		46100CF1247977E4004204A6 /* Camera.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Camera.hpp; sourceTree = "<group>"; };
+		46100CF3247A8AC2004204A6 /* stb_image.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = stb_image.h; path = External/stb_image.h; sourceTree = "<group>"; };
+		46100CF5247A8B5A004204A6 /* Texture.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Texture.cpp; sourceTree = "<group>"; };
+		46100CF6247A8B5A004204A6 /* Texture.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Texture.hpp; sourceTree = "<group>"; };
+		4647CFC5247AD88F00239DC5 /* Light.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Light.cpp; sourceTree = "<group>"; };
+		4647CFC6247AD88F00239DC5 /* Light.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Light.hpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -82,6 +89,7 @@
 		46100CD3246D980F004204A6 /* OpenGL Sandbox */ = {
 			isa = PBXGroup;
 			children = (
+				46100CF4247A8AC9004204A6 /* External */,
 				46100CEC247590CB004204A6 /* Shaders */,
 				46100CE2246D9C9F004204A6 /* OpenGL Sandbox.entitlements */,
 				46100CD4246D980F004204A6 /* main.cpp */,
@@ -93,6 +101,10 @@
 				46100CEE247592FE004204A6 /* Window.hpp */,
 				46100CF0247977E4004204A6 /* Camera.cpp */,
 				46100CF1247977E4004204A6 /* Camera.hpp */,
+				46100CF5247A8B5A004204A6 /* Texture.cpp */,
+				46100CF6247A8B5A004204A6 /* Texture.hpp */,
+				4647CFC5247AD88F00239DC5 /* Light.cpp */,
+				4647CFC6247AD88F00239DC5 /* Light.hpp */,
 			);
 			path = "OpenGL Sandbox";
 			sourceTree = "<group>";
@@ -114,6 +126,14 @@
 				46100CE9247583FC004204A6 /* shader.frag */,
 			);
 			name = Shaders;
+			sourceTree = "<group>";
+		};
+		46100CF4247A8AC9004204A6 /* External */ = {
+			isa = PBXGroup;
+			children = (
+				46100CF3247A8AC2004204A6 /* stb_image.h */,
+			);
+			name = External;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -173,9 +193,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4647CFC7247AD88F00239DC5 /* Light.cpp in Sources */,
 				46100CE5247447D1004204A6 /* Mesh.cpp in Sources */,
 				46100CE824757999004204A6 /* Shader.cpp in Sources */,
 				46100CF2247977E4004204A6 /* Camera.cpp in Sources */,
+				46100CF7247A8B5A004204A6 /* Texture.cpp in Sources */,
 				46100CD5246D980F004204A6 /* main.cpp in Sources */,
 				46100CEF247592FE004204A6 /* Window.cpp in Sources */,
 			);

@@ -33,10 +33,16 @@ void Mesh::CreateMesh(GLfloat* vertices, unsigned int* indices, unsigned int num
             glBindBuffer(GL_ARRAY_BUFFER, VBO);
                 glBufferData(GL_ARRAY_BUFFER, sizeof(vertices[0]) * numOfVertices, vertices, GL_STATIC_DRAW); // target, size, data, usage
                 
-                glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0); // location, size, type, normalize values, stride, offset
-                // stride = (skip values in array, values that could for example indicate color or other data)
+                // Location 0 = vCoordinates
+                glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(vertices[0]) * 8, 0); // location, size, type, normalize values, stride, offset
                 glEnableVertexAttribArray(0); // Enable location 0
-        
+                // Location 1 = UV coordinates
+                glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(vertices[0]) * 8, (void*)(sizeof(vertices[0]) * 3));
+                glEnableVertexAttribArray(1);
+                // Location 2 = Normals
+                glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(vertices[0]) * 8, (void*)(sizeof(vertices[0]) * 5));
+                glEnableVertexAttribArray(2);
+    
             glBindBuffer(GL_ARRAY_BUFFER, 0);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
