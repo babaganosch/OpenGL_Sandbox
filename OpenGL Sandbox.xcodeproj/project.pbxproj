@@ -14,6 +14,7 @@
 		46100CE5247447D1004204A6 /* Mesh.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 46100CE3247447D1004204A6 /* Mesh.cpp */; };
 		46100CE824757999004204A6 /* Shader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 46100CE624757999004204A6 /* Shader.cpp */; };
 		46100CEF247592FE004204A6 /* Window.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 46100CED247592FE004204A6 /* Window.cpp */; };
+		46100CF2247977E4004204A6 /* Camera.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 46100CF0247977E4004204A6 /* Camera.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -43,6 +44,8 @@
 		46100CEA247583FD004204A6 /* shader.vert */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; name = shader.vert; path = Shaders/shader.vert; sourceTree = "<group>"; };
 		46100CED247592FE004204A6 /* Window.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Window.cpp; sourceTree = "<group>"; };
 		46100CEE247592FE004204A6 /* Window.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Window.hpp; sourceTree = "<group>"; };
+		46100CF0247977E4004204A6 /* Camera.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Camera.cpp; sourceTree = "<group>"; };
+		46100CF1247977E4004204A6 /* Camera.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Camera.hpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -88,6 +91,8 @@
 				46100CE724757999004204A6 /* Shader.hpp */,
 				46100CED247592FE004204A6 /* Window.cpp */,
 				46100CEE247592FE004204A6 /* Window.hpp */,
+				46100CF0247977E4004204A6 /* Camera.cpp */,
+				46100CF1247977E4004204A6 /* Camera.hpp */,
 			);
 			path = "OpenGL Sandbox";
 			sourceTree = "<group>";
@@ -105,8 +110,8 @@
 		46100CEC247590CB004204A6 /* Shaders */ = {
 			isa = PBXGroup;
 			children = (
-				46100CE9247583FC004204A6 /* shader.frag */,
 				46100CEA247583FD004204A6 /* shader.vert */,
+				46100CE9247583FC004204A6 /* shader.frag */,
 			);
 			name = Shaders;
 			sourceTree = "<group>";
@@ -170,6 +175,7 @@
 			files = (
 				46100CE5247447D1004204A6 /* Mesh.cpp in Sources */,
 				46100CE824757999004204A6 /* Shader.cpp in Sources */,
+				46100CF2247977E4004204A6 /* Camera.cpp in Sources */,
 				46100CD5246D980F004204A6 /* main.cpp in Sources */,
 				46100CEF247592FE004204A6 /* Window.cpp in Sources */,
 			);

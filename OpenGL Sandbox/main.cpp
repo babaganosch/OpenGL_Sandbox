@@ -16,14 +16,18 @@
 #include "Mesh.hpp"
 #include "Shader.hpp"
 #include "Window.hpp"
+#include "Camera.hpp"
 
 using namespace glm;
 using namespace std;
 
-const float toRadians = 3.14159265f / 180.0f;
 Window mainWindow;
+Camera camera;
 vector<Mesh*> meshList;
 vector<Shader> shaderList;
+
+GLfloat deltaTime = 0.0f;
+GLfloat lastTime = 0.0f;
 
 // Vertex Shader
 static const char* vShader = "./Shaders/shader.vert";
@@ -73,19 +77,32 @@ int main() {
     CreateShaders();
     glBindVertexArray(0);
     
-    GLuint uniformModel = 0, uniformProjection = 0;
+    camera = Camera(vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 1.0f, 0.0f), -90.0f, 0.0f, 5.0f, 1.0f);
+    
+    GLuint uniformModel = 0, uniformProjection = 0, uniformView = 0;
     mat4 projection = perspective(45.0f, mainWindow.getBufferWidth() / mainWindow.getBufferHeight(), 0.1f, 100.f);
     
     while ( !mainWindow.getShouldClose() )
     {
-        glfwPollEvents( );
+        // Timing
+        GLfloat now = glfwGetTime();
+        deltaTime = now - lastTime;
+        lastTime = now;
         
+        // Input
+        glfwPollEvents( );
+        camera.keyControl(deltaTime, mainWindow.getKeys());
+        camera.mouseControl(mainWindow.getXChange(), mainWindow.getYChange());
+        
+        // Clear the window
         glClearColor( 0.2f, 0.3f, 0.3f, 1.0f );
         glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
         
+        // Rendering
         shaderList[0].UseShader();
         uniformModel = shaderList[0].GetModelLocation();
         uniformProjection = shaderList[0].GetProjectionLocation();
+        uniformView = shaderList[0].GetViewLocation();
         
             mat4 model(1.0f);
             model = translate(model, vec3(0.0f, 0.0f, -2.5f));
@@ -93,6 +110,7 @@ int main() {
         
             glUniformMatrix4fv(uniformModel, 1, GL_FALSE, value_ptr(model));
             glUniformMatrix4fv(uniformProjection, 1, GL_FALSE, value_ptr(projection));
+            glUniformMatrix4fv(uniformView, 1, GL_FALSE, value_ptr(camera.calculateViewMatrix()));
         
             meshList[0]->RenderMesh();
         

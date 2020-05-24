@@ -14,6 +14,9 @@ Window::Window()
     height = 600;
     xChange = 0.0f;
     yChange = 0.0f;
+    lastX = 0.0f;
+    lastY = 0.0f;
+    mouseFirstMoved = true;
     
     for (size_t i = 0; i < 1024; i++)
     {
