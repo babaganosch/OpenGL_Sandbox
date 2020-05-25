@@ -17,6 +17,9 @@
 		46100CF2247977E4004204A6 /* Camera.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 46100CF0247977E4004204A6 /* Camera.cpp */; };
 		46100CF7247A8B5A004204A6 /* Texture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 46100CF5247A8B5A004204A6 /* Texture.cpp */; };
 		4647CFC7247AD88F00239DC5 /* Light.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4647CFC5247AD88F00239DC5 /* Light.cpp */; };
+		4647CFCA247B102800239DC5 /* Material.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4647CFC8247B102800239DC5 /* Material.cpp */; };
+		4647CFCD247BB9BF00239DC5 /* DirectionalLight.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4647CFCB247BB9BF00239DC5 /* DirectionalLight.cpp */; };
+		4647CFD0247BBDB000239DC5 /* PointLight.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4647CFCE247BBDB000239DC5 /* PointLight.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -53,6 +56,13 @@
 		46100CF6247A8B5A004204A6 /* Texture.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Texture.hpp; sourceTree = "<group>"; };
 		4647CFC5247AD88F00239DC5 /* Light.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Light.cpp; sourceTree = "<group>"; };
 		4647CFC6247AD88F00239DC5 /* Light.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Light.hpp; sourceTree = "<group>"; };
+		4647CFC8247B102800239DC5 /* Material.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Material.cpp; sourceTree = "<group>"; };
+		4647CFC9247B102800239DC5 /* Material.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Material.hpp; sourceTree = "<group>"; };
+		4647CFCB247BB9BF00239DC5 /* DirectionalLight.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = DirectionalLight.cpp; sourceTree = "<group>"; };
+		4647CFCC247BB9BF00239DC5 /* DirectionalLight.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = DirectionalLight.hpp; sourceTree = "<group>"; };
+		4647CFCE247BBDB000239DC5 /* PointLight.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = PointLight.cpp; sourceTree = "<group>"; };
+		4647CFCF247BBDB000239DC5 /* PointLight.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = PointLight.hpp; sourceTree = "<group>"; };
+		4647CFD2247BC89C00239DC5 /* CommonValues.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = CommonValues.hpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -105,6 +115,13 @@
 				46100CF6247A8B5A004204A6 /* Texture.hpp */,
 				4647CFC5247AD88F00239DC5 /* Light.cpp */,
 				4647CFC6247AD88F00239DC5 /* Light.hpp */,
+				4647CFC8247B102800239DC5 /* Material.cpp */,
+				4647CFC9247B102800239DC5 /* Material.hpp */,
+				4647CFCB247BB9BF00239DC5 /* DirectionalLight.cpp */,
+				4647CFCC247BB9BF00239DC5 /* DirectionalLight.hpp */,
+				4647CFCE247BBDB000239DC5 /* PointLight.cpp */,
+				4647CFCF247BBDB000239DC5 /* PointLight.hpp */,
+				4647CFD2247BC89C00239DC5 /* CommonValues.hpp */,
 			);
 			path = "OpenGL Sandbox";
 			sourceTree = "<group>";
@@ -162,7 +179,7 @@
 		46100CC9246D980F004204A6 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 1140;
+				LastUpgradeCheck = 1150;
 				ORGANIZATIONNAME = "Lars Andersson";
 				TargetAttributes = {
 					46100CD0246D980F004204A6 = {
@@ -194,9 +211,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				4647CFC7247AD88F00239DC5 /* Light.cpp in Sources */,
+				4647CFD0247BBDB000239DC5 /* PointLight.cpp in Sources */,
 				46100CE5247447D1004204A6 /* Mesh.cpp in Sources */,
+				4647CFCD247BB9BF00239DC5 /* DirectionalLight.cpp in Sources */,
 				46100CE824757999004204A6 /* Shader.cpp in Sources */,
 				46100CF2247977E4004204A6 /* Camera.cpp in Sources */,
+				4647CFCA247B102800239DC5 /* Material.cpp in Sources */,
 				46100CF7247A8B5A004204A6 /* Texture.cpp in Sources */,
 				46100CD5246D980F004204A6 /* main.cpp in Sources */,
 				46100CEF247592FE004204A6 /* Window.cpp in Sources */,
@@ -319,6 +339,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = "OpenGL Sandbox/OpenGL Sandbox.entitlements";
+				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 2786ERZGHU;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -336,6 +357,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = "OpenGL Sandbox/OpenGL Sandbox.entitlements";
+				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 2786ERZGHU;
 				ENABLE_HARDENED_RUNTIME = YES;
