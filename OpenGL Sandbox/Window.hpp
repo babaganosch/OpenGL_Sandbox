@@ -30,6 +30,7 @@ public:
     bool* getKeys() { return keys; }
     bool getShouldClose() { return glfwWindowShouldClose(mainWindow); }
     void swapBuffers() { glfwSwapBuffers(mainWindow); };
+    void resetViewport();
     
 private:
     GLFWwindow* mainWindow;

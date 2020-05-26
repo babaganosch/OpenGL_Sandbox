@@ -17,10 +17,11 @@ class Texture
 {
 public:
     Texture();
-    Texture(char* fileLoc);
+    Texture(const char* fileLoc);
     ~Texture();
     
-    void LoadTexture();
+    bool LoadTexture();
+    bool LoadTextureA();
     void UseTexture();
     void ClearTexture();
     
@@ -28,7 +29,7 @@ private:
     GLuint textureID;
     int width, height, bitDepth;
     
-    char* fileLocation;
+    const char* fileLocation;
 };
 
 #endif /* Texture_hpp */

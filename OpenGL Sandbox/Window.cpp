@@ -66,12 +66,18 @@ int Window::Initialise()
     }
     
     glEnable(GL_DEPTH_TEST);
+    //glEnable(GL_CULL_FACE);
     
     glViewport( 0, 0, bufferWidth, bufferHeight );
     
     glfwSetWindowUserPointer(mainWindow, this);
     
     return 0;
+}
+
+void Window::resetViewport()
+{
+    glViewport( 0, 0, bufferWidth, bufferHeight );
 }
 
 GLfloat Window::getXChange()

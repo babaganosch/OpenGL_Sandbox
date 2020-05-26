@@ -20,6 +20,10 @@
 		4647CFCA247B102800239DC5 /* Material.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4647CFC8247B102800239DC5 /* Material.cpp */; };
 		4647CFCD247BB9BF00239DC5 /* DirectionalLight.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4647CFCB247BB9BF00239DC5 /* DirectionalLight.cpp */; };
 		4647CFD0247BBDB000239DC5 /* PointLight.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4647CFCE247BBDB000239DC5 /* PointLight.cpp */; };
+		46928374247C1F5F00D1819D /* SpotLight.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 46928372247C1F5F00D1819D /* SpotLight.cpp */; };
+		46928376247C3BD600D1819D /* libassimp.5.0.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 46928375247C3BD600D1819D /* libassimp.5.0.0.dylib */; };
+		4692837B247C3E9900D1819D /* Model.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 46928379247C3E9900D1819D /* Model.cpp */; };
+		4692837E247D2C8300D1819D /* ShadowMap.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4692837C247D2C8300D1819D /* ShadowMap.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -63,6 +67,15 @@
 		4647CFCE247BBDB000239DC5 /* PointLight.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = PointLight.cpp; sourceTree = "<group>"; };
 		4647CFCF247BBDB000239DC5 /* PointLight.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = PointLight.hpp; sourceTree = "<group>"; };
 		4647CFD2247BC89C00239DC5 /* CommonValues.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = CommonValues.hpp; sourceTree = "<group>"; };
+		46928372247C1F5F00D1819D /* SpotLight.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = SpotLight.cpp; sourceTree = "<group>"; };
+		46928373247C1F5F00D1819D /* SpotLight.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = SpotLight.hpp; sourceTree = "<group>"; };
+		46928375247C3BD600D1819D /* libassimp.5.0.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libassimp.5.0.0.dylib; path = ../../../../usr/local/Cellar/assimp/5.0.1/lib/libassimp.5.0.0.dylib; sourceTree = "<group>"; };
+		46928379247C3E9900D1819D /* Model.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Model.cpp; sourceTree = "<group>"; };
+		4692837A247C3E9900D1819D /* Model.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Model.hpp; sourceTree = "<group>"; };
+		4692837C247D2C8300D1819D /* ShadowMap.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ShadowMap.cpp; sourceTree = "<group>"; };
+		4692837D247D2C8300D1819D /* ShadowMap.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = ShadowMap.hpp; sourceTree = "<group>"; };
+		4692837F247D47C800D1819D /* directional_shadow_map.frag */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; name = directional_shadow_map.frag; path = Shaders/directional_shadow_map.frag; sourceTree = "<group>"; };
+		46928380247D47C800D1819D /* directional_shadow_map.vert */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; name = directional_shadow_map.vert; path = Shaders/directional_shadow_map.vert; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -72,6 +85,7 @@
 			files = (
 				46100CE1246D9920004204A6 /* libglfw.3.3.dylib in Frameworks */,
 				46100CDF246D98E5004204A6 /* libGLEW.2.1.0.dylib in Frameworks */,
+				46928376247C3BD600D1819D /* libassimp.5.0.0.dylib in Frameworks */,
 				46100CDD246D988F004204A6 /* OpenGL.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -103,6 +117,7 @@
 				46100CEC247590CB004204A6 /* Shaders */,
 				46100CE2246D9C9F004204A6 /* OpenGL Sandbox.entitlements */,
 				46100CD4246D980F004204A6 /* main.cpp */,
+				4647CFD2247BC89C00239DC5 /* CommonValues.hpp */,
 				46100CE3247447D1004204A6 /* Mesh.cpp */,
 				46100CE4247447D1004204A6 /* Mesh.hpp */,
 				46100CE624757999004204A6 /* Shader.cpp */,
@@ -121,7 +136,12 @@
 				4647CFCC247BB9BF00239DC5 /* DirectionalLight.hpp */,
 				4647CFCE247BBDB000239DC5 /* PointLight.cpp */,
 				4647CFCF247BBDB000239DC5 /* PointLight.hpp */,
-				4647CFD2247BC89C00239DC5 /* CommonValues.hpp */,
+				46928372247C1F5F00D1819D /* SpotLight.cpp */,
+				46928373247C1F5F00D1819D /* SpotLight.hpp */,
+				46928379247C3E9900D1819D /* Model.cpp */,
+				4692837A247C3E9900D1819D /* Model.hpp */,
+				4692837C247D2C8300D1819D /* ShadowMap.cpp */,
+				4692837D247D2C8300D1819D /* ShadowMap.hpp */,
 			);
 			path = "OpenGL Sandbox";
 			sourceTree = "<group>";
@@ -129,6 +149,7 @@
 		46100CDB246D988F004204A6 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				46928375247C3BD600D1819D /* libassimp.5.0.0.dylib */,
 				46100CE0246D9920004204A6 /* libglfw.3.3.dylib */,
 				46100CDE246D98E5004204A6 /* libGLEW.2.1.0.dylib */,
 				46100CDC246D988F004204A6 /* OpenGL.framework */,
@@ -139,6 +160,8 @@
 		46100CEC247590CB004204A6 /* Shaders */ = {
 			isa = PBXGroup;
 			children = (
+				46928380247D47C800D1819D /* directional_shadow_map.vert */,
+				4692837F247D47C800D1819D /* directional_shadow_map.frag */,
 				46100CEA247583FD004204A6 /* shader.vert */,
 				46100CE9247583FC004204A6 /* shader.frag */,
 			);
@@ -212,10 +235,13 @@
 			files = (
 				4647CFC7247AD88F00239DC5 /* Light.cpp in Sources */,
 				4647CFD0247BBDB000239DC5 /* PointLight.cpp in Sources */,
+				46928374247C1F5F00D1819D /* SpotLight.cpp in Sources */,
+				4692837B247C3E9900D1819D /* Model.cpp in Sources */,
 				46100CE5247447D1004204A6 /* Mesh.cpp in Sources */,
 				4647CFCD247BB9BF00239DC5 /* DirectionalLight.cpp in Sources */,
 				46100CE824757999004204A6 /* Shader.cpp in Sources */,
 				46100CF2247977E4004204A6 /* Camera.cpp in Sources */,
+				4692837E247D2C8300D1819D /* ShadowMap.cpp in Sources */,
 				4647CFCA247B102800239DC5 /* Material.cpp in Sources */,
 				46100CF7247A8B5A004204A6 /* Texture.cpp in Sources */,
 				46100CD5246D980F004204A6 /* main.cpp in Sources */,
@@ -348,6 +374,7 @@
 					"$(inherited)",
 					/usr/local/Cellar/glew/2.1.0_1/lib,
 					/usr/local/Cellar/glfw/3.3.2/lib,
+					/usr/local/Cellar/assimp/5.0.1/lib,
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -366,6 +393,7 @@
 					"$(inherited)",
 					/usr/local/Cellar/glew/2.1.0_1/lib,
 					/usr/local/Cellar/glfw/3.3.2/lib,
+					/usr/local/Cellar/assimp/5.0.1/lib,
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
