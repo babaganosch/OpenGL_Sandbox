@@ -24,6 +24,7 @@
 		46928376247C3BD600D1819D /* libassimp.5.0.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 46928375247C3BD600D1819D /* libassimp.5.0.0.dylib */; };
 		4692837B247C3E9900D1819D /* Model.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 46928379247C3E9900D1819D /* Model.cpp */; };
 		4692837E247D2C8300D1819D /* ShadowMap.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4692837C247D2C8300D1819D /* ShadowMap.cpp */; };
+		46928383247D76BA00D1819D /* OmniShadowMap.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 46928381247D76BA00D1819D /* OmniShadowMap.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -76,6 +77,11 @@
 		4692837D247D2C8300D1819D /* ShadowMap.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = ShadowMap.hpp; sourceTree = "<group>"; };
 		4692837F247D47C800D1819D /* directional_shadow_map.frag */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; name = directional_shadow_map.frag; path = Shaders/directional_shadow_map.frag; sourceTree = "<group>"; };
 		46928380247D47C800D1819D /* directional_shadow_map.vert */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; name = directional_shadow_map.vert; path = Shaders/directional_shadow_map.vert; sourceTree = "<group>"; };
+		46928381247D76BA00D1819D /* OmniShadowMap.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = OmniShadowMap.cpp; sourceTree = "<group>"; };
+		46928382247D76BA00D1819D /* OmniShadowMap.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = OmniShadowMap.hpp; sourceTree = "<group>"; };
+		46928384247D7AD100D1819D /* omni_shadow_map.geom */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; name = omni_shadow_map.geom; path = Shaders/omni_shadow_map.geom; sourceTree = "<group>"; };
+		46928385247D7AD100D1819D /* omni_shadow_map.vert */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; name = omni_shadow_map.vert; path = Shaders/omni_shadow_map.vert; sourceTree = "<group>"; };
+		46928386247D7AD100D1819D /* omni_shadow_map.frag */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; name = omni_shadow_map.frag; path = Shaders/omni_shadow_map.frag; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -142,6 +148,8 @@
 				4692837A247C3E9900D1819D /* Model.hpp */,
 				4692837C247D2C8300D1819D /* ShadowMap.cpp */,
 				4692837D247D2C8300D1819D /* ShadowMap.hpp */,
+				46928381247D76BA00D1819D /* OmniShadowMap.cpp */,
+				46928382247D76BA00D1819D /* OmniShadowMap.hpp */,
 			);
 			path = "OpenGL Sandbox";
 			sourceTree = "<group>";
@@ -160,6 +168,9 @@
 		46100CEC247590CB004204A6 /* Shaders */ = {
 			isa = PBXGroup;
 			children = (
+				46928385247D7AD100D1819D /* omni_shadow_map.vert */,
+				46928386247D7AD100D1819D /* omni_shadow_map.frag */,
+				46928384247D7AD100D1819D /* omni_shadow_map.geom */,
 				46928380247D47C800D1819D /* directional_shadow_map.vert */,
 				4692837F247D47C800D1819D /* directional_shadow_map.frag */,
 				46100CEA247583FD004204A6 /* shader.vert */,
@@ -244,6 +255,7 @@
 				4692837E247D2C8300D1819D /* ShadowMap.cpp in Sources */,
 				4647CFCA247B102800239DC5 /* Material.cpp in Sources */,
 				46100CF7247A8B5A004204A6 /* Texture.cpp in Sources */,
+				46928383247D76BA00D1819D /* OmniShadowMap.cpp in Sources */,
 				46100CD5246D980F004204A6 /* main.cpp in Sources */,
 				46100CEF247592FE004204A6 /* Window.cpp in Sources */,
 			);
