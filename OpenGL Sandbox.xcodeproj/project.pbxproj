@@ -24,6 +24,10 @@
 		46928376247C3BD600D1819D /* libassimp.5.0.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 46928375247C3BD600D1819D /* libassimp.5.0.0.dylib */; };
 		4692837B247C3E9900D1819D /* Model.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 46928379247C3E9900D1819D /* Model.cpp */; };
 		4692837E247D2C8300D1819D /* ShadowMap.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4692837C247D2C8300D1819D /* ShadowMap.cpp */; };
+		46F9E3BA247EAD9D00DB0808 /* ParticleSystem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 46F9E3B8247EAD9D00DB0808 /* ParticleSystem.cpp */; };
+		46F9E3BD247EAEA600DB0808 /* Particle.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 46F9E3BB247EAEA600DB0808 /* Particle.cpp */; };
+		46F9E3C3247FC93400DB0808 /* CommonValues.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 46F9E3C2247FC93400DB0808 /* CommonValues.cpp */; };
+		46F9E3C6247FCD6400DB0808 /* Quad.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 46F9E3C4247FCD6400DB0808 /* Quad.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -76,6 +80,19 @@
 		4692837D247D2C8300D1819D /* ShadowMap.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = ShadowMap.hpp; sourceTree = "<group>"; };
 		4692837F247D47C800D1819D /* directional_shadow_map.frag */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; name = directional_shadow_map.frag; path = Shaders/directional_shadow_map.frag; sourceTree = "<group>"; };
 		46928380247D47C800D1819D /* directional_shadow_map.vert */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; name = directional_shadow_map.vert; path = Shaders/directional_shadow_map.vert; sourceTree = "<group>"; };
+		46F9E3B8247EAD9D00DB0808 /* ParticleSystem.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ParticleSystem.cpp; sourceTree = "<group>"; };
+		46F9E3B9247EAD9D00DB0808 /* ParticleSystem.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = ParticleSystem.hpp; sourceTree = "<group>"; };
+		46F9E3BB247EAEA600DB0808 /* Particle.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Particle.cpp; sourceTree = "<group>"; };
+		46F9E3BC247EAEA600DB0808 /* Particle.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Particle.hpp; sourceTree = "<group>"; };
+		46F9E3BE247EBA9200DB0808 /* simpleParticles.vert */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; name = simpleParticles.vert; path = Shaders/simpleParticles.vert; sourceTree = "<group>"; };
+		46F9E3BF247EBA9200DB0808 /* simpleParticles.frag */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; name = simpleParticles.frag; path = Shaders/simpleParticles.frag; sourceTree = "<group>"; };
+		46F9E3C0247EDB5200DB0808 /* particle.vert */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; name = particle.vert; path = Shaders/particle.vert; sourceTree = "<group>"; };
+		46F9E3C1247EDB5200DB0808 /* particle.frag */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; name = particle.frag; path = Shaders/particle.frag; sourceTree = "<group>"; };
+		46F9E3C2247FC93400DB0808 /* CommonValues.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = CommonValues.cpp; sourceTree = "<group>"; };
+		46F9E3C4247FCD6400DB0808 /* Quad.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Quad.cpp; sourceTree = "<group>"; };
+		46F9E3C5247FCD6400DB0808 /* Quad.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Quad.hpp; sourceTree = "<group>"; };
+		46F9E3C7247FD4C000DB0808 /* passthrough.vert */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; name = passthrough.vert; path = Shaders/QuadRenderer/passthrough.vert; sourceTree = "<group>"; };
+		46F9E3C8247FD4C000DB0808 /* simpleTexture.frag */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; name = simpleTexture.frag; path = Shaders/QuadRenderer/simpleTexture.frag; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -117,6 +134,7 @@
 				46100CEC247590CB004204A6 /* Shaders */,
 				46100CE2246D9C9F004204A6 /* OpenGL Sandbox.entitlements */,
 				46100CD4246D980F004204A6 /* main.cpp */,
+				46F9E3C2247FC93400DB0808 /* CommonValues.cpp */,
 				4647CFD2247BC89C00239DC5 /* CommonValues.hpp */,
 				46100CE3247447D1004204A6 /* Mesh.cpp */,
 				46100CE4247447D1004204A6 /* Mesh.hpp */,
@@ -142,6 +160,12 @@
 				4692837A247C3E9900D1819D /* Model.hpp */,
 				4692837C247D2C8300D1819D /* ShadowMap.cpp */,
 				4692837D247D2C8300D1819D /* ShadowMap.hpp */,
+				46F9E3B8247EAD9D00DB0808 /* ParticleSystem.cpp */,
+				46F9E3B9247EAD9D00DB0808 /* ParticleSystem.hpp */,
+				46F9E3BB247EAEA600DB0808 /* Particle.cpp */,
+				46F9E3BC247EAEA600DB0808 /* Particle.hpp */,
+				46F9E3C4247FCD6400DB0808 /* Quad.cpp */,
+				46F9E3C5247FCD6400DB0808 /* Quad.hpp */,
 			);
 			path = "OpenGL Sandbox";
 			sourceTree = "<group>";
@@ -160,6 +184,11 @@
 		46100CEC247590CB004204A6 /* Shaders */ = {
 			isa = PBXGroup;
 			children = (
+				46F9E3C9247FD4C600DB0808 /* QuadRenderer */,
+				46F9E3C1247EDB5200DB0808 /* particle.frag */,
+				46F9E3C0247EDB5200DB0808 /* particle.vert */,
+				46F9E3BF247EBA9200DB0808 /* simpleParticles.frag */,
+				46F9E3BE247EBA9200DB0808 /* simpleParticles.vert */,
 				46928380247D47C800D1819D /* directional_shadow_map.vert */,
 				4692837F247D47C800D1819D /* directional_shadow_map.frag */,
 				46100CEA247583FD004204A6 /* shader.vert */,
@@ -174,6 +203,15 @@
 				46100CF3247A8AC2004204A6 /* stb_image.h */,
 			);
 			name = External;
+			sourceTree = "<group>";
+		};
+		46F9E3C9247FD4C600DB0808 /* QuadRenderer */ = {
+			isa = PBXGroup;
+			children = (
+				46F9E3C7247FD4C000DB0808 /* passthrough.vert */,
+				46F9E3C8247FD4C000DB0808 /* simpleTexture.frag */,
+			);
+			name = QuadRenderer;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -234,13 +272,17 @@
 			buildActionMask = 2147483647;
 			files = (
 				4647CFC7247AD88F00239DC5 /* Light.cpp in Sources */,
+				46F9E3BD247EAEA600DB0808 /* Particle.cpp in Sources */,
 				4647CFD0247BBDB000239DC5 /* PointLight.cpp in Sources */,
+				46F9E3BA247EAD9D00DB0808 /* ParticleSystem.cpp in Sources */,
 				46928374247C1F5F00D1819D /* SpotLight.cpp in Sources */,
 				4692837B247C3E9900D1819D /* Model.cpp in Sources */,
+				46F9E3C6247FCD6400DB0808 /* Quad.cpp in Sources */,
 				46100CE5247447D1004204A6 /* Mesh.cpp in Sources */,
 				4647CFCD247BB9BF00239DC5 /* DirectionalLight.cpp in Sources */,
 				46100CE824757999004204A6 /* Shader.cpp in Sources */,
 				46100CF2247977E4004204A6 /* Camera.cpp in Sources */,
+				46F9E3C3247FC93400DB0808 /* CommonValues.cpp in Sources */,
 				4692837E247D2C8300D1819D /* ShadowMap.cpp in Sources */,
 				4647CFCA247B102800239DC5 /* Material.cpp in Sources */,
 				46100CF7247A8B5A004204A6 /* Texture.cpp in Sources */,

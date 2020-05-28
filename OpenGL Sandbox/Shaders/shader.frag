@@ -6,7 +6,7 @@ in vec3 Normal;
 in vec3 FragPos;
 in vec4 DirectionalLightSpacePos;
 
-out vec4 colour;
+layout(location = 0) out vec4 colour;
 
 const int MAX_POINT_LIGHTS = 3;
 const int MAX_SPOT_LIGHTS = 3;
@@ -74,23 +74,22 @@ float CalcDirectionalShadowFactor(DirectionalLight light)
     float shadow = 0.0f;
     vec2 texelSize = 1.0 / textureSize(directionalShadowMap, 0);
     // PCF (get average shadow)
-    float i = 0.0;
-    int sampleRate = 2;
-    for (int x = -sampleRate; x <= sampleRate; x++)
+    if (!(projCoords.z > 1.0))
     {
-        for (int y = -sampleRate; y <= sampleRate; y++)
+        float i = 0.0;
+        int sampleRate = 2;
+        for (int x = -sampleRate; x <= sampleRate; x++)
         {
-            float pcfDepth = texture(directionalShadowMap, projCoords.xy + vec2(x, y) * texelSize).r;
-            shadow += ((current - bias) > pcfDepth) ? 1.0 : 0.0;
-            i++;
+            for (int y = -sampleRate; y <= sampleRate; y++)
+            {
+                float pcfDepth = texture(directionalShadowMap, projCoords.xy + vec2(x, y) * texelSize).r;
+                shadow += ((current - bias) > pcfDepth) ? 1.0 : 0.0;
+                i++;
+            }
         }
-    }
-    
-    shadow /= i;
-    
-    if (projCoords.z > 1.0)
-    {
-        shadow = 0.0;
+        
+        shadow /= i;
+        
     }
     
     return shadow;

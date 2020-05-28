@@ -56,12 +56,15 @@ void Camera::keyControl(GLfloat dt, bool* keys)
 
 void Camera::mouseControl(GLfloat xChange, GLfloat yChange)
 {
+    //printf("innan: %f\n", yaw);
     xChange *= turnSpeed;
     yChange *= turnSpeed;
     
     yaw += xChange;
+    yaw = fmodf(yaw, 360.0);
     pitch += yChange;
     pitch = glm::clamp(pitch, -89.0f, 89.0f);
+    //printf("efter: %f\n", yaw);
     
     update();
 }

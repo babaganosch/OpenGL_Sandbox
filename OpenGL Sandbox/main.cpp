@@ -27,6 +27,9 @@
 #include "SpotLight.hpp"
 #include "Material.hpp"
 
+#include "ParticleSystem.hpp"
+#include "Quad.hpp"
+
 #include "Model.hpp"
 
 using namespace glm;
@@ -40,16 +43,24 @@ Camera camera;
 vector<Mesh*> meshList;
 vector<Shader> shaderList;
 Shader directionalShadowShader;
+Shader particleShader;
+Shader passthrough;
+
+ParticleSystem ps;
+Quad screenQuad;
 
 Texture brickTexture;
 Texture dirtTexture;
+Texture grassTexture;
 Texture plainTexture;
+Texture particleTexture;
 
 Material shinyMaterial;
 Material dullMaterial;
 
 Model xwing;
 Model blackHawk;
+Model deLorean;
 
 DirectionalLight mainLight;
 PointLight pointLights[MAX_POINT_LIGHTS];
@@ -150,10 +161,17 @@ void CreateShaders()
     
     directionalShadowShader = Shader();
     directionalShadowShader.CreateFromFiles("Shaders/directional_shadow_map.vert", "Shaders/directional_shadow_map.frag");
+    
+    particleShader = Shader();
+    particleShader.CreateFromFiles("Shaders/particle.vert", "Shaders/particle.frag");
+    
+    passthrough = Shader();
+    passthrough.CreateFromFiles("Shaders/QuadRenderer/passthrough.vert", "Shaders/QuadRenderer/simpleTexture.frag");
 }
 
 void RenderScene()
 {
+    /* TRI1 */
     mat4 model(1.0f);
     model = translate(model, vec3(0.0f, 0.0f, -2.5f));
     glUniformMatrix4fv(uniformModel, 1, GL_FALSE, value_ptr(model));
@@ -161,6 +179,7 @@ void RenderScene()
     shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
     meshList[0]->RenderMesh();
 
+    /* TRI2 */
     model = mat4(1.0f);
     model = translate(model, vec3(0.0f, 4.0f, -2.5f));
     glUniformMatrix4fv(uniformModel, 1, GL_FALSE, value_ptr(model));
@@ -168,21 +187,23 @@ void RenderScene()
     dullMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
     meshList[1]->RenderMesh();
 
+    /* FLOOR */
     model = mat4(1.0f);
     model = translate(model, vec3(0.0f, -2.0f, 0.0f));
     glUniformMatrix4fv(uniformModel, 1, GL_FALSE, value_ptr(model));
     dirtTexture.UseTexture();
-    shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
+    dullMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
     meshList[2]->RenderMesh();
 
+    /* XWING */
     model = mat4(1.0f);
     model = translate(model, vec3(-7.0f, 0.0f, 10.0f));
     model = scale(model, vec3(0.006f, 0.006f, 0.006f));
     glUniformMatrix4fv(uniformModel, 1, GL_FALSE, value_ptr(model));
-    dirtTexture.UseTexture();
     shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
     xwing.RenderModel();
 
+    /* BLACKHAWK */
     blackHawkAngle += 0.1f;
     if (blackHawkAngle > 360.0f) blackHawkAngle = 0.1f;
     model = mat4(1.0f);
@@ -192,9 +213,17 @@ void RenderScene()
     model = rotate(model, -15.0f * toRadians, vec3(0.0f, 0.0f, 1.0f));
     model = rotate(model, -90.0f * toRadians, vec3(1.0f, 0.0f, 0.0f));
     glUniformMatrix4fv(uniformModel, 1, GL_FALSE, value_ptr(model));
-    dirtTexture.UseTexture();
     shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
     blackHawk.RenderModel();
+    
+    /* DELOREAN */
+    model = mat4(1.0f);
+    model = translate(model, vec3(3.0f, -1.5f, 4.0f));
+    model = scale(model, vec3(0.005f, 0.005f, 0.005f));
+    glUniformMatrix4fv(uniformModel, 1, GL_FALSE, value_ptr(model));
+    shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
+    deLorean.RenderModel();
+    
 }
 
 void DirectionalShadowMapPass(DirectionalLight* light)
@@ -217,6 +246,7 @@ void DirectionalShadowMapPass(DirectionalLight* light)
 
 void RenderPass(mat4 projectionMatrix, mat4 viewMatrix)
 {
+    
     shaderList[0].UseShader();
     
     uniformModel = shaderList[0].GetModelLocation();
@@ -228,9 +258,12 @@ void RenderPass(mat4 projectionMatrix, mat4 viewMatrix)
     
     mainWindow.resetViewport();
     
+    screenQuad.RenderToTexture();
+    
     // Clear the window
     glClearColor( 0.0f, 0.0f, 0.0f, 1.0f );
     glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+    glEnable(GL_DEPTH_TEST);
     
     glUniformMatrix4fv(uniformProjection, 1, GL_FALSE, value_ptr(projectionMatrix));
     glUniformMatrix4fv(uniformView, 1, GL_FALSE, value_ptr(viewMatrix));
@@ -264,7 +297,13 @@ int main() {
     CreateShaders();
     glBindVertexArray(0);
     
-    camera = Camera(vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 1.0f, 0.0f), -90.0f, 0.0f, 5.0f, 0.5f);
+    ps = ParticleSystem(1000);
+    ps.Init();
+    
+    screenQuad = Quad();
+    screenQuad.Init(mainWindow.getBufferWidth(), mainWindow.getBufferHeight());
+    
+    camera = Camera(vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 1.0f, 0.0f), -88.0f, 0.0f, 5.0f, 0.5f);
     
     brickTexture = Texture((char*)"Textures/brick.png");
     brickTexture.LoadTextureA();
@@ -272,6 +311,10 @@ int main() {
     dirtTexture.LoadTextureA();
     plainTexture = Texture((char*)"Textures/plain.png");
     plainTexture.LoadTextureA();
+    grassTexture = Texture((char*)"Textures/grass.jpg");
+    grassTexture.LoadTexture();
+    particleTexture = Texture((char*)"Textures/plain.png");
+    particleTexture.LoadTextureA();
     
     shinyMaterial = Material(4.0f, 156.0f);
     dullMaterial = Material(0.3f, 4.0f);
@@ -282,9 +325,12 @@ int main() {
     blackHawk = Model();
     blackHawk.LoadModel("Models/uh60.obj");
     
+    deLorean = Model();
+    deLorean.LoadModel("Models/DeLorean.obj");
+    
     mainLight = DirectionalLight(2048, 2048,
                                  1.0f, 1.0f, 1.0f,
-                                 0.2f, 0.5f,
+                                 0.2f, 0.3f,
                                  0.0f, -15.0f, -10.0f);
     
     /*
@@ -332,6 +378,18 @@ int main() {
         
         DirectionalShadowMapPass(&mainLight);
         RenderPass(projection, camera.calculateViewMatrix());
+        
+        
+        ps.ProcessParticles(deltaTime);
+        particleShader.UseShader();
+        
+        plainTexture.UseTexture();
+        glUniformMatrix4fv(particleShader.GetProjectionLocation(), 1, GL_FALSE, value_ptr(projection));
+        ps.RenderParticles(camera.calculateViewMatrix());
+        
+         
+        passthrough.UseShader();
+        screenQuad.RenderTextureToScreen();
         
         glUseProgram(0);
         
