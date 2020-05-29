@@ -97,11 +97,11 @@ void ParticleSystem::ProcessParticles(float dt)
     }
     
     unsigned int missing = max_size - (unsigned int)particles.size();
-    missing = std::fmin(missing, 64);
+    missing = std::fmin(missing, 128);
     if (missing > 0)
     {
         vec3 startpos = vec3(0.0f, 0.0f, 0.0f);
-        float scale = 5.0f;
+        float scale = 3.0f;
         
         for (int i = 0; i < missing; i++)
         {

@@ -18,17 +18,12 @@ public:
     Quad();
     ~Quad();
     
-    void Init(unsigned int width, unsigned int height);
-    void RenderToTexture();
-    void RenderTextureToScreen();
+    void Init();
+    void RenderTexture( GLuint texture );
+    void RenderFB();
     
 private:
-    GLuint FBO, RBO, VAO, VBO;
-    GLuint textureID;
-    
-    int width;
-    int height;
-    int bitDepth;
+    GLuint VAO, VBO;
 };
 
 #endif /* Quad_hpp */

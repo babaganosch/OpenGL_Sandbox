@@ -7,6 +7,7 @@ in vec3 FragPos;
 in vec4 DirectionalLightSpacePos;
 
 layout(location = 0) out vec4 colour;
+//layout(location = 1) out vec4 depth;
 
 const int MAX_POINT_LIGHTS = 3;
 const int MAX_SPOT_LIGHTS = 3;
@@ -188,5 +189,7 @@ void main()
     vec4 finalColour = CalcDirectionalLight();
     finalColour += CalcPointLights();
     finalColour += CalcSpotLights();
-    colour = texture(theTexture, TexCoord) * finalColour;
+    //colour = texture(theTexture, TexCoord) * finalColour;
+    colour = vec4(FragPos, 1.0f);
+    //depth = colour;
 }

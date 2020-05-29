@@ -28,6 +28,7 @@
 		46F9E3BD247EAEA600DB0808 /* Particle.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 46F9E3BB247EAEA600DB0808 /* Particle.cpp */; };
 		46F9E3C3247FC93400DB0808 /* CommonValues.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 46F9E3C2247FC93400DB0808 /* CommonValues.cpp */; };
 		46F9E3C6247FCD6400DB0808 /* Quad.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 46F9E3C4247FCD6400DB0808 /* Quad.cpp */; };
+		46F9E3CD24810F5200DB0808 /* Renderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 46F9E3CB24810F5200DB0808 /* Renderer.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -93,6 +94,10 @@
 		46F9E3C5247FCD6400DB0808 /* Quad.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Quad.hpp; sourceTree = "<group>"; };
 		46F9E3C7247FD4C000DB0808 /* passthrough.vert */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; name = passthrough.vert; path = Shaders/QuadRenderer/passthrough.vert; sourceTree = "<group>"; };
 		46F9E3C8247FD4C000DB0808 /* simpleTexture.frag */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; name = simpleTexture.frag; path = Shaders/QuadRenderer/simpleTexture.frag; sourceTree = "<group>"; };
+		46F9E3CB24810F5200DB0808 /* Renderer.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Renderer.cpp; sourceTree = "<group>"; };
+		46F9E3CC24810F5200DB0808 /* Renderer.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Renderer.hpp; sourceTree = "<group>"; };
+		46F9E3CF24811BCB00DB0808 /* motionBlur.frag */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; name = motionBlur.frag; path = Shaders/MotionBlur/motionBlur.frag; sourceTree = "<group>"; };
+		46F9E3D024811BCB00DB0808 /* motionBlur.vert */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; name = motionBlur.vert; path = Shaders/MotionBlur/motionBlur.vert; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -130,6 +135,7 @@
 		46100CD3246D980F004204A6 /* OpenGL Sandbox */ = {
 			isa = PBXGroup;
 			children = (
+				46F9E3CA2480FEAD00DB0808 /* Illumination */,
 				46100CF4247A8AC9004204A6 /* External */,
 				46100CEC247590CB004204A6 /* Shaders */,
 				46100CE2246D9C9F004204A6 /* OpenGL Sandbox.entitlements */,
@@ -146,26 +152,18 @@
 				46100CF1247977E4004204A6 /* Camera.hpp */,
 				46100CF5247A8B5A004204A6 /* Texture.cpp */,
 				46100CF6247A8B5A004204A6 /* Texture.hpp */,
-				4647CFC5247AD88F00239DC5 /* Light.cpp */,
-				4647CFC6247AD88F00239DC5 /* Light.hpp */,
 				4647CFC8247B102800239DC5 /* Material.cpp */,
 				4647CFC9247B102800239DC5 /* Material.hpp */,
-				4647CFCB247BB9BF00239DC5 /* DirectionalLight.cpp */,
-				4647CFCC247BB9BF00239DC5 /* DirectionalLight.hpp */,
-				4647CFCE247BBDB000239DC5 /* PointLight.cpp */,
-				4647CFCF247BBDB000239DC5 /* PointLight.hpp */,
-				46928372247C1F5F00D1819D /* SpotLight.cpp */,
-				46928373247C1F5F00D1819D /* SpotLight.hpp */,
 				46928379247C3E9900D1819D /* Model.cpp */,
 				4692837A247C3E9900D1819D /* Model.hpp */,
-				4692837C247D2C8300D1819D /* ShadowMap.cpp */,
-				4692837D247D2C8300D1819D /* ShadowMap.hpp */,
 				46F9E3B8247EAD9D00DB0808 /* ParticleSystem.cpp */,
 				46F9E3B9247EAD9D00DB0808 /* ParticleSystem.hpp */,
 				46F9E3BB247EAEA600DB0808 /* Particle.cpp */,
 				46F9E3BC247EAEA600DB0808 /* Particle.hpp */,
 				46F9E3C4247FCD6400DB0808 /* Quad.cpp */,
 				46F9E3C5247FCD6400DB0808 /* Quad.hpp */,
+				46F9E3CB24810F5200DB0808 /* Renderer.cpp */,
+				46F9E3CC24810F5200DB0808 /* Renderer.hpp */,
 			);
 			path = "OpenGL Sandbox";
 			sourceTree = "<group>";
@@ -184,6 +182,7 @@
 		46100CEC247590CB004204A6 /* Shaders */ = {
 			isa = PBXGroup;
 			children = (
+				46F9E3CE24811BB800DB0808 /* MotionBlur */,
 				46F9E3C9247FD4C600DB0808 /* QuadRenderer */,
 				46F9E3C1247EDB5200DB0808 /* particle.frag */,
 				46F9E3C0247EDB5200DB0808 /* particle.vert */,
@@ -212,6 +211,32 @@
 				46F9E3C8247FD4C000DB0808 /* simpleTexture.frag */,
 			);
 			name = QuadRenderer;
+			sourceTree = "<group>";
+		};
+		46F9E3CA2480FEAD00DB0808 /* Illumination */ = {
+			isa = PBXGroup;
+			children = (
+				4647CFC5247AD88F00239DC5 /* Light.cpp */,
+				4647CFC6247AD88F00239DC5 /* Light.hpp */,
+				4647CFCB247BB9BF00239DC5 /* DirectionalLight.cpp */,
+				4647CFCC247BB9BF00239DC5 /* DirectionalLight.hpp */,
+				4647CFCE247BBDB000239DC5 /* PointLight.cpp */,
+				4647CFCF247BBDB000239DC5 /* PointLight.hpp */,
+				46928372247C1F5F00D1819D /* SpotLight.cpp */,
+				46928373247C1F5F00D1819D /* SpotLight.hpp */,
+				4692837C247D2C8300D1819D /* ShadowMap.cpp */,
+				4692837D247D2C8300D1819D /* ShadowMap.hpp */,
+			);
+			name = Illumination;
+			sourceTree = "<group>";
+		};
+		46F9E3CE24811BB800DB0808 /* MotionBlur */ = {
+			isa = PBXGroup;
+			children = (
+				46F9E3D024811BCB00DB0808 /* motionBlur.vert */,
+				46F9E3CF24811BCB00DB0808 /* motionBlur.frag */,
+			);
+			name = MotionBlur;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -271,6 +296,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				46F9E3CD24810F5200DB0808 /* Renderer.cpp in Sources */,
 				4647CFC7247AD88F00239DC5 /* Light.cpp in Sources */,
 				46F9E3BD247EAEA600DB0808 /* Particle.cpp in Sources */,
 				4647CFD0247BBDB000239DC5 /* PointLight.cpp in Sources */,

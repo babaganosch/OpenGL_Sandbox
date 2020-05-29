@@ -24,6 +24,7 @@ public:
     
     GLuint GetShadowWidth() { return shadowWidth; }
     GLuint GetShadowHeight() { return shadowHeight; }
+    GLuint GetTexture() { return shadowMap; }
     
 protected:
     GLuint FBO, shadowMap;

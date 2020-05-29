@@ -43,12 +43,16 @@ public:
     GLuint GetShininessLocation();
     GLuint GetEyePositionLocation();
     
+    GLuint GetViewProjectionInverseMatrix() { return uniformViewProjectionInverseMatrix; }
+    GLuint GetPreviousViewProjectionMatrix() { return uniformPreviousViewProjectionMatrix; }
+    
     void SetDirectionalLight(DirectionalLight* dLight);
     void SetPointLights(PointLight* pLight, unsigned int lightCount);
     void SetSpotLights(SpotLight* sLight, unsigned int lightCount);
     void SetTexture(GLuint textureUnit);
     void SetDirectionalShadowMap(GLuint textureUnit);
     void SetDirectionalLightTransform(glm::mat4* lTransform);
+    void SetMotionBlurTextures(GLuint textureUnit0, GLuint textureUnit1);
     
     void UseShader();
     void ClearShader();
@@ -61,6 +65,9 @@ private:
     GLuint uniformSpecularIntensity, uniformShininess;
     GLuint uniformTexture;
     GLuint uniformDirectionalLightTransform, uniformDirectionalShadowMap;
+    
+    GLuint uniformViewProjectionInverseMatrix, uniformPreviousViewProjectionMatrix;
+    GLuint uniformMotionBlurTexture0, uniformMotionBlurTexture1;
     
     struct {
         GLuint uniformColour;

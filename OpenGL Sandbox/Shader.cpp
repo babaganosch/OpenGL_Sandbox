@@ -114,6 +114,12 @@ void Shader::SetTexture(GLuint textureUnit)
     glUniform1i(uniformTexture, textureUnit);
 }
 
+void Shader::SetMotionBlurTextures(GLuint textureUnit0, GLuint textureUnit1)
+{
+    glUniform1i(uniformMotionBlurTexture0, textureUnit0);
+    glUniform1i(uniformMotionBlurTexture1, textureUnit1);
+}
+
 void Shader::SetDirectionalShadowMap(GLuint textureUnit)
 {
     glUniform1i(uniformDirectionalShadowMap, textureUnit);
@@ -294,6 +300,14 @@ void Shader::CompileShader(const char* vertexCode, const char* fragmentCode)
     uniformDirectionalLightTransform = glGetUniformLocation(shaderID, "directionalLightTransform");
     uniformTexture = glGetUniformLocation(shaderID, "theTexture");
     uniformDirectionalShadowMap = glGetUniformLocation(shaderID, "directionalShadowMap");
+    
+    
+    
+    /* MOTION BLUR */
+    uniformViewProjectionInverseMatrix = glGetUniformLocation(shaderID, "g_ViewProjectionInverseMatrix");
+    uniformPreviousViewProjectionMatrix = glGetUniformLocation(shaderID, "g_previousViewProjectionMatrix");
+    uniformMotionBlurTexture0 = glGetUniformLocation(shaderID, "renderedTexture");
+    uniformMotionBlurTexture1 = glGetUniformLocation(shaderID, "depthTexture");
 }
 
 void Shader::AddShader(GLuint theProgram, const char* shaderCode, GLenum shaderType)
