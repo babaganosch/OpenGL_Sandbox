@@ -44,7 +44,7 @@ void main()
     if (TexCoords.x > 0.5) {
         outColour = texture(renderedTexture, TexCoords);
     } else {
-        outColour = worldPos;//color / numSamples;
+        outColour = vec4(TexCoords, 0.0f, 1.0f);//worldPos;//color / numSamples;
     }
 
 }
