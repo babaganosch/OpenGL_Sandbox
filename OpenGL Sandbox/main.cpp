@@ -48,6 +48,7 @@ Shader directionalShadowShader;
 Shader particleShader;
 Shader passthrough;
 Shader motionBlurShader;
+Shader chrAbrShader;
 
 Renderer renderer;
 
@@ -177,6 +178,9 @@ void CreateShaders()
     
     motionBlurShader = Shader();
     motionBlurShader.CreateFromFiles("Shaders/MotionBlur/motionBlur.vert", "Shaders/MotionBlur/motionBlur.frag");
+    
+    chrAbrShader = Shader();
+    chrAbrShader.CreateFromFiles("Shaders/CHRABR/passthrough.vert", "Shaders/CHRABR/chromatic_aberration.frag");
 }
 
 void RenderScene()
@@ -433,9 +437,6 @@ int main() {
         
         renderer.Reset();
         
-        //passthrough.UseShader();
-        //screenQuad.RenderTexture(renderer.GetDepthTexture());
-        
         glClearColor( 0.0f, 0.0f, 0.0f, 1.0f );
         glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
         glEnable(GL_DEPTH_TEST);
@@ -452,12 +453,18 @@ int main() {
         mat4 VPIM = inverse(projection * viewMatrix);
         oldViewProjectionMatrix = projection * viewMatrix;
         
-        glUniformMatrix4fv(motionBlurShader.GetViewProjectionInverseMatrix(), 1, GL_FALSE, value_ptr(inverse(VPIM)));
+        glUniformMatrix4fv(motionBlurShader.GetViewProjectionInverseMatrix(), 1, GL_FALSE, value_ptr(VPIM));
         
         screenQuad.RenderTexture(renderer.GetTexture());
         
         glUniformMatrix4fv(motionBlurShader.GetPreviousViewProjectionMatrix(), 1, GL_FALSE, value_ptr(oldViewProjectionMatrix));
         
+        
+        /*glClearColor( 0.0f, 0.0f, 0.0f, 1.0f );
+        glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+        glEnable(GL_DEPTH_TEST);
+        chrAbrShader.UseShader();
+        screenQuad.RenderTexture(renderer.GetTexture());*/
         
         glUseProgram(0);
         // Swap buffers

@@ -8,13 +8,12 @@ uniform mat4 g_ViewProjectionInverseMatrix;
 uniform sampler2D renderedTexture;
 uniform sampler2D depthTexture;
 
-float numSamples = 5.0f;
+float numSamples = 3.0f;
 void main()
 {
-    // Get the depth buffer value at this pixel.
-    float zOverW = texture(depthTexture, TexCoords).r;
+    float zOverW = texture(depthTexture, TexCoords).r * 2.0f - 1.0f;
     // H is the viewport position at this pixel in the range -1 to 1.
-    vec4 H = vec4(TexCoords.x * 2.0f - 1.0f, (1.0f - TexCoords.y) * 2.0f - 1.0f, zOverW, 1.0f);
+    vec4 H = vec4(TexCoords.x * 2.0f - 1.0f, (TexCoords.y) * 2.0f - 1.0f, zOverW, 1.0f);
     // Transform by the view-projection inverse.
     vec4 D = g_ViewProjectionInverseMatrix * H;
     // Divide by w to get the world position.
@@ -41,10 +40,6 @@ void main()
     }
     // Average all of the samples to get the final blur color.
     
-    if (TexCoords.x > 0.5) {
-        outColour = texture(renderedTexture, TexCoords);
-    } else {
-        outColour = vec4(TexCoords, 0.0f, 1.0f);//worldPos;//color / numSamples;
-    }
+    outColour = color / numSamples;
 
 }

@@ -189,7 +189,7 @@ void main()
     vec4 finalColour = CalcDirectionalLight();
     finalColour += CalcPointLights();
     finalColour += CalcSpotLights();
-    //colour = texture(theTexture, TexCoord) * finalColour;
-    colour = vec4(FragPos, 1.0f);
+    colour = texture(theTexture, TexCoord) * finalColour;
+    //colour = vec4(FragPos, 1.0f);
     //depth = colour;
 }
