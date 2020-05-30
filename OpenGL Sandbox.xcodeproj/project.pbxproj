@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		460ABE9124825CAA00D71454 /* OmniShadowMap.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 460ABE8F24825CAA00D71454 /* OmniShadowMap.cpp */; };
 		46100CD5246D980F004204A6 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 46100CD4246D980F004204A6 /* main.cpp */; };
 		46100CDD246D988F004204A6 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 46100CDC246D988F004204A6 /* OpenGL.framework */; };
 		46100CDF246D98E5004204A6 /* libGLEW.2.1.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 46100CDE246D98E5004204A6 /* libGLEW.2.1.0.dylib */; };
@@ -46,6 +47,8 @@
 /* Begin PBXFileReference section */
 		460ABE8D2481836E00D71454 /* chromatic_aberration.frag */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; name = chromatic_aberration.frag; path = Shaders/CHRABR/chromatic_aberration.frag; sourceTree = "<group>"; };
 		460ABE8E2481836F00D71454 /* passthrough.vert */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; name = passthrough.vert; path = Shaders/CHRABR/passthrough.vert; sourceTree = "<group>"; };
+		460ABE8F24825CAA00D71454 /* OmniShadowMap.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = OmniShadowMap.cpp; sourceTree = "<group>"; };
+		460ABE9024825CAA00D71454 /* OmniShadowMap.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = OmniShadowMap.hpp; sourceTree = "<group>"; };
 		46100CD1246D980F004204A6 /* OpenGL Sandbox */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "OpenGL Sandbox"; sourceTree = BUILT_PRODUCTS_DIR; };
 		46100CD4246D980F004204A6 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		46100CDC246D988F004204A6 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
@@ -238,6 +241,8 @@
 				46928373247C1F5F00D1819D /* SpotLight.hpp */,
 				4692837C247D2C8300D1819D /* ShadowMap.cpp */,
 				4692837D247D2C8300D1819D /* ShadowMap.hpp */,
+				460ABE8F24825CAA00D71454 /* OmniShadowMap.cpp */,
+				460ABE9024825CAA00D71454 /* OmniShadowMap.hpp */,
 			);
 			name = Illumination;
 			sourceTree = "<group>";
@@ -325,6 +330,7 @@
 				4647CFCA247B102800239DC5 /* Material.cpp in Sources */,
 				46100CF7247A8B5A004204A6 /* Texture.cpp in Sources */,
 				46100CD5246D980F004204A6 /* main.cpp in Sources */,
+				460ABE9124825CAA00D71454 /* OmniShadowMap.cpp in Sources */,
 				46100CEF247592FE004204A6 /* Window.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

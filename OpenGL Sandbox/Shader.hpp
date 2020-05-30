@@ -45,6 +45,7 @@ public:
     
     GLuint GetViewProjectionInverseMatrix() { return uniformViewProjectionInverseMatrix; }
     GLuint GetPreviousViewProjectionMatrix() { return uniformPreviousViewProjectionMatrix; }
+    GLuint GetShowHalfScreenOnlyLocation() { return uniformShowHalfScreenOnly; }
     
     void SetDirectionalLight(DirectionalLight* dLight);
     void SetPointLights(PointLight* pLight, unsigned int lightCount);
@@ -65,6 +66,8 @@ private:
     GLuint uniformSpecularIntensity, uniformShininess;
     GLuint uniformTexture;
     GLuint uniformDirectionalLightTransform, uniformDirectionalShadowMap;
+    
+    GLuint uniformShowHalfScreenOnly;
     
     GLuint uniformViewProjectionInverseMatrix, uniformPreviousViewProjectionMatrix;
     GLuint uniformMotionBlurTexture0, uniformMotionBlurTexture1;

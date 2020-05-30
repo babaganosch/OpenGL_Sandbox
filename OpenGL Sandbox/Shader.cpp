@@ -304,6 +304,7 @@ void Shader::CompileShader(const char* vertexCode, const char* fragmentCode)
     
     
     /* MOTION BLUR */
+    uniformShowHalfScreenOnly = glGetUniformLocation(shaderID, "showHalfScreenOnly");
     uniformViewProjectionInverseMatrix = glGetUniformLocation(shaderID, "g_ViewProjectionInverseMatrix");
     uniformPreviousViewProjectionMatrix = glGetUniformLocation(shaderID, "g_previousViewProjectionMatrix");
     uniformMotionBlurTexture0 = glGetUniformLocation(shaderID, "renderedTexture");

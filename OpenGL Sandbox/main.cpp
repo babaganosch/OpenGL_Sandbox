@@ -84,6 +84,7 @@ GLfloat blackHawkAngle = 0.0f;
 
 bool activeMotionBlur = true;
 bool activeParticles  = true;
+bool showHalfScreenOnly = false;
 
 void CalcAverageNormals(unsigned int* indices, unsigned int indiceCount, GLfloat* vertices, unsigned int verticeCount, unsigned int vLength, unsigned int normalOffset)
 {
@@ -303,6 +304,7 @@ void PostProcessingPass(mat4 projectionMatrix, mat4 viewMatrix, mat4* oldViewPro
         glBindTexture(GL_TEXTURE_2D, renderer.GetTexture());
         glActiveTexture(GL_TEXTURE1);
         glBindTexture(GL_TEXTURE_2D, renderer.GetDepthTexture());
+        glUniform1i(motionBlurShader.GetShowHalfScreenOnlyLocation(), showHalfScreenOnly);
         
         *oldViewProjectionMatrix = projectionMatrix * viewMatrix;
         
@@ -474,8 +476,18 @@ int main() {
         camera.mouseControl(mainWindow.getXChange(), mainWindow.getYChange());
         viewMatrix = camera.calculateViewMatrix();
         
-        if (mainWindow.getKeys()[GLFW_KEY_P]) activeParticles = !activeParticles;
-        if (mainWindow.getKeys()[GLFW_KEY_O]) activeMotionBlur = !activeMotionBlur;
+        if (mainWindow.getKeys()[GLFW_KEY_P]) {
+            mainWindow.getKeys()[GLFW_KEY_P] = false;
+            activeParticles = !activeParticles;
+        }
+        if (mainWindow.getKeys()[GLFW_KEY_O]) {
+            mainWindow.getKeys()[GLFW_KEY_O] = false;
+            activeMotionBlur = !activeMotionBlur;
+        }
+        if (mainWindow.getKeys()[GLFW_KEY_I]) {
+            mainWindow.getKeys()[GLFW_KEY_I] = false;
+            showHalfScreenOnly = !showHalfScreenOnly;
+        }
             
         /* Regular render pass */
         DirectionalShadowMapPass(&mainLight);
