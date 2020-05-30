@@ -52,7 +52,10 @@ Shader chrAbrShader;
 
 Renderer renderer;
 
-ParticleSystem ps;
+ParticleSystem ps0;
+ParticleSystem ps1;
+ParticleSystem ps2;
+ParticleSystem ps3;
 Quad screenQuad;
 
 Texture brickTexture;
@@ -68,7 +71,6 @@ Model xwing;
 Model blackHawk;
 Model deLorean;
 Model ball;
-Model russianCar;
 
 DirectionalLight mainLight;
 PointLight pointLights[MAX_POINT_LIGHTS];
@@ -78,13 +80,10 @@ unsigned int spotLightCount = 0;
 
 GLfloat deltaTime = 0.0f;
 GLfloat lastTime = 0.0f;
-
 GLfloat blackHawkAngle = 0.0f;
 
-// Vertex Shader
-static const char* vShader = "./Shaders/shader.vert";
-// Fragment Shader
-static const char* fShader = "./Shaders/shader.frag";
+bool activeMotionBlur = true;
+bool activeParticles  = true;
 
 void CalcAverageNormals(unsigned int* indices, unsigned int indiceCount, GLfloat* vertices, unsigned int verticeCount, unsigned int vLength, unsigned int normalOffset)
 {
@@ -164,7 +163,7 @@ void CreateObjects()
 void CreateShaders()
 {
     Shader* shader1 = new Shader();
-    shader1->CreateFromFiles(vShader, fShader);
+    shader1->CreateFromFiles("Shaders/shader.vert", "Shaders/shader.frag");
     shaderList.push_back(*shader1);
     
     directionalShadowShader = Shader();
@@ -274,6 +273,55 @@ void DirectionalShadowMapPass(DirectionalLight* light)
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
+void ParticleRenderingPass(mat4 projectionMatrix, mat4 viewMatrix)
+{
+    ps0.ProcessParticles(deltaTime);
+    ps1.ProcessParticles(deltaTime);
+    ps2.ProcessParticles(deltaTime);
+    ps3.ProcessParticles(deltaTime);
+    particleShader.UseShader();
+    particleTexture.UseTexture();
+    glUniformMatrix4fv(particleShader.GetProjectionLocation(), 1, GL_FALSE, value_ptr(projectionMatrix));
+    ps0.RenderParticles(viewMatrix);
+    ps1.RenderParticles(viewMatrix);
+    ps2.RenderParticles(viewMatrix);
+    ps3.RenderParticles(viewMatrix);
+}
+
+void PostProcessingPass(mat4 projectionMatrix, mat4 viewMatrix, mat4* oldViewProjectionMatrix)
+{
+    renderer.Reset();
+    
+    /* MOTION BLUR */
+    if (activeMotionBlur) {
+        
+        motionBlurShader.UseShader();
+        renderer.Clear();
+        
+        motionBlurShader.SetMotionBlurTextures(0, 1);
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, renderer.GetTexture());
+        glActiveTexture(GL_TEXTURE1);
+        glBindTexture(GL_TEXTURE_2D, renderer.GetDepthTexture());
+        
+        *oldViewProjectionMatrix = projectionMatrix * viewMatrix;
+        
+        glUniformMatrix4fv(motionBlurShader.GetViewProjectionInverseMatrix(), 1, GL_FALSE, value_ptr(inverse(projectionMatrix * viewMatrix)));
+        
+        screenQuad.RenderTexture(renderer.GetTexture());
+        
+        glUniformMatrix4fv(motionBlurShader.GetPreviousViewProjectionMatrix(), 1, GL_FALSE, value_ptr(*oldViewProjectionMatrix));
+    }
+    
+    /* PASSTHROUGH */
+    else
+    {
+        renderer.Clear();
+        passthrough.UseShader();
+        screenQuad.RenderTexture(renderer.GetTexture());
+    }
+}
+
 void RenderPass(mat4 projectionMatrix, mat4 viewMatrix)
 {
     
@@ -289,8 +337,7 @@ void RenderPass(mat4 projectionMatrix, mat4 viewMatrix)
     mainWindow.resetViewport();
     
     // Clear the window
-    glClearColor( 0.0f, 0.0f, 0.0f, 1.0f );
-    glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+    renderer.Clear();
     glEnable(GL_DEPTH_TEST);
     
     glUniformMatrix4fv(uniformProjection, 1, GL_FALSE, value_ptr(projectionMatrix));
@@ -313,12 +360,11 @@ void RenderPass(mat4 projectionMatrix, mat4 viewMatrix)
     spotLights[0].SetFlash(handPosition, camera.getCameraDirection());
     
     RenderScene();
-    
 }
 
 int main() {
     
-    mainWindow = Window(1366, 768); // 1280x1024 also works good
+    mainWindow = Window(1366, 768);
     mainWindow.Initialise();
     
     renderer = Renderer();
@@ -329,8 +375,17 @@ int main() {
     CreateShaders();
     glBindVertexArray(0);
     
-    ps = ParticleSystem(2000);
-    ps.Init();
+    ps0 = ParticleSystem(1000);
+    ps0.Init(vec3(1.3f, 0.25f, 1.8f));
+    
+    ps1 = ParticleSystem(1000);
+    ps1.Init(vec3(1.3f, 0.25f, 1.13f));
+    
+    ps2 = ParticleSystem(1000);
+    ps2.Init(vec3(1.3f, 0.66f, 1.8f));
+    
+    ps3 = ParticleSystem(1000);
+    ps3.Init(vec3(1.3f, 0.66f, 1.13f));
     
     screenQuad = Quad();
     screenQuad.Init();
@@ -362,9 +417,6 @@ int main() {
     
     ball = Model();
     ball.LoadModel("Models/3d-model.obj");
-    
-    russianCar = Model();
-    russianCar.LoadModel("Models/VAZ2106.obj");
     
     mainLight = DirectionalLight(2048, 2048,
                                  1.0f, 1.0f, 1.0f,
@@ -420,44 +472,22 @@ int main() {
         glfwPollEvents( );
         camera.keyControl(deltaTime, mainWindow.getKeys());
         camera.mouseControl(mainWindow.getXChange(), mainWindow.getYChange());
-        
         viewMatrix = camera.calculateViewMatrix();
         
+        if (mainWindow.getKeys()[GLFW_KEY_P]) activeParticles = !activeParticles;
+        if (mainWindow.getKeys()[GLFW_KEY_O]) activeMotionBlur = !activeMotionBlur;
+            
         /* Regular render pass */
         DirectionalShadowMapPass(&mainLight);
         renderer.RenderToTexture();
         RenderPass(projection, viewMatrix);
         
         /* Particles */
-        ps.ProcessParticles(deltaTime);
-        particleShader.UseShader();
-        particleTexture.UseTexture();
-        glUniformMatrix4fv(particleShader.GetProjectionLocation(), 1, GL_FALSE, value_ptr(projection));
-        ps.RenderParticles(viewMatrix);
+        if (activeParticles)
+            ParticleRenderingPass(projection, viewMatrix);
         
-        renderer.Reset();
-        
-        glClearColor( 0.0f, 0.0f, 0.0f, 1.0f );
-        glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
-        glEnable(GL_DEPTH_TEST);
-        
-        motionBlurShader.UseShader();
-        
-        
-        motionBlurShader.SetMotionBlurTextures(0, 1);
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, renderer.GetTexture());
-        glActiveTexture(GL_TEXTURE1);
-        glBindTexture(GL_TEXTURE_2D, renderer.GetDepthTexture());
-        
-        mat4 VPIM = inverse(projection * viewMatrix);
-        oldViewProjectionMatrix = projection * viewMatrix;
-        
-        glUniformMatrix4fv(motionBlurShader.GetViewProjectionInverseMatrix(), 1, GL_FALSE, value_ptr(VPIM));
-        
-        screenQuad.RenderTexture(renderer.GetTexture());
-        
-        glUniformMatrix4fv(motionBlurShader.GetPreviousViewProjectionMatrix(), 1, GL_FALSE, value_ptr(oldViewProjectionMatrix));
+        /* Post FX */
+        PostProcessingPass(projection, viewMatrix, &oldViewProjectionMatrix);
         
         
         /*glClearColor( 0.0f, 0.0f, 0.0f, 1.0f );
@@ -469,6 +499,7 @@ int main() {
         glUseProgram(0);
         // Swap buffers
         mainWindow.swapBuffers();
+        
     }
     
     glfwTerminate( );

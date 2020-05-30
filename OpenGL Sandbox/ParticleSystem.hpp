@@ -25,7 +25,7 @@ public:
     explicit ParticleSystem(int size) : max_size(size) { }
     ~ParticleSystem();
     
-    void Init();
+    void Init(glm::vec3 offset);
     
     void Kill(int id);
     void Spawn(Particle particle);
@@ -35,6 +35,7 @@ public:
 private:
     GLuint VAO, VBO;
     glm::vec4 data[10000] = {};
+    glm::vec3 positionOffset;
 };
 
 #endif /* ParticleSystem_hpp */

@@ -21,6 +21,7 @@ public:
     void Init(unsigned int width, unsigned int height);
     void RenderToTexture();
     void Reset();
+    void Clear();
     
     GLuint GetTexture() { return colorTexture; }
     GLuint GetDepthTexture() { return depthTexture; }

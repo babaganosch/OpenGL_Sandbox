@@ -28,8 +28,9 @@ void ParticleSystem::Spawn(Particle particle)
     particles.push_back(particle);
 }
 
-void ParticleSystem::Init()
+void ParticleSystem::Init(glm::vec3 offset)
 {
+    positionOffset = offset;
     glGenBuffers(1, &VBO);
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     
@@ -49,7 +50,7 @@ void ParticleSystem::RenderParticles(glm::mat4 viewMatrix)
     std::vector<glm::vec4> stdData;
     
     glm::mat4 rotatedMatrix = glm::rotate(viewMatrix, glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-    rotatedMatrix = glm::translate(rotatedMatrix, glm::vec3(1.3f, 0.25f, 1.8f));
+    rotatedMatrix = glm::translate(rotatedMatrix, positionOffset);
     
     for (int i = 0; i < active_particles; i++)
     {
@@ -106,7 +107,7 @@ void ParticleSystem::ProcessParticles(float dt)
         for (int i = 0; i < missing; i++)
         {
             const float theta = CommonHelper::uniform_randf(0.0f, 2.0f * M_PI);
-            const float u = CommonHelper::uniform_randf(0.95f, 1.0f);
+            const float u = CommonHelper::uniform_randf(0.975f, 1.0f);
             
             vec3 velocity = vec3(u, sqrt(1.0f - u * u) * cosf(theta), sqrt(1.0f - u * u) * sinf(theta));
             float maxlife = CommonHelper::uniform_randf(1.5f, 2.0f);
