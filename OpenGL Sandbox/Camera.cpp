@@ -19,8 +19,7 @@ Camera::Camera(glm::vec3 startPosition, glm::vec3 startUp, GLfloat startYaw, GLf
     worldUp = startUp;
     yaw = startYaw;
     pitch = startPitch;
-    front = glm::vec3(0.0f, 0.0f, -1.0f);
-    
+    front = glm::vec3(1.0f, 0.0f, 0.0f);
     moveSpeed = startMoveSpeed;
     turnSpeed = startTurnSpeed;
     
@@ -56,7 +55,7 @@ void Camera::keyControl(GLfloat dt, bool* keys)
 
 void Camera::mouseControl(GLfloat xChange, GLfloat yChange)
 {
-    //printf("innan: %f\n", yaw);
+    
     xChange *= turnSpeed;
     yChange *= turnSpeed;
     
@@ -64,7 +63,6 @@ void Camera::mouseControl(GLfloat xChange, GLfloat yChange)
     yaw = fmodf(yaw, 360.0);
     pitch += yChange;
     pitch = glm::clamp(pitch, -89.0f, 89.0f);
-    //printf("efter: %f\n", yaw);
     
     update();
 }
@@ -93,4 +91,5 @@ void Camera::update()
     
     right = glm::normalize(glm::cross(front, worldUp));
     up = glm::normalize(glm::cross(right, front));
+    
 }

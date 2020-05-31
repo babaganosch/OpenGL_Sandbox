@@ -33,6 +33,7 @@ Light(shadowWidth, shadowHeight, red, green, blue, aIntensity, dIntensity)
     float aspect = (float)shadowWidth / (float)shadowHeight;
     lightProj = glm::perspective(glm::radians(90.0f), aspect, near, farPlane);
     
+    delete shadowMap;
     shadowMap = new OmniShadowMap();
     shadowMap->Init(shadowWidth, shadowHeight);
 }
@@ -57,18 +58,26 @@ void PointLight::UseLight(GLuint ambientIntensityLocation, GLuint ambientColourL
 std::vector<glm::mat4> PointLight::CalculateLightTransform()
 {
     std::vector<glm::mat4> lightTransforms;
+    
+    // +x, -x
     lightTransforms.push_back(lightProj *
         glm::lookAt(position, position + glm::vec3(1.0, 0.0, 0.0), glm::vec3(0.0, -1.0, 0.0)));
     lightTransforms.push_back(lightProj *
         glm::lookAt(position, position + glm::vec3(-1.0, 0.0, 0.0), glm::vec3(0.0, -1.0, 0.0)));
+    
+    // +y, -y
     lightTransforms.push_back(lightProj *
         glm::lookAt(position, position + glm::vec3(0.0, 1.0, 0.0), glm::vec3(0.0, 0.0, 1.0)));
     lightTransforms.push_back(lightProj *
         glm::lookAt(position, position + glm::vec3(0.0, -1.0, 0.0), glm::vec3(0.0, 0.0, -1.0)));
+    
+    // +z, -z
     lightTransforms.push_back(lightProj *
         glm::lookAt(position, position + glm::vec3(0.0, 0.0, 1.0), glm::vec3(0.0, -1.0, 0.0)));
     lightTransforms.push_back(lightProj *
         glm::lookAt(position, position + glm::vec3(0.0, 0.0, -1.0), glm::vec3(0.0, -1.0, 0.0)));
+    
+    //std::reverse(lightTransforms.begin(), lightTransforms.end());
 
     return lightTransforms;
 }

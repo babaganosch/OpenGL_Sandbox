@@ -7,7 +7,6 @@ in vec3 FragPos;
 in vec4 DirectionalLightSpacePos;
 
 layout(location = 0) out vec4 colour;
-//layout(location = 1) out vec4 depth;
 
 const int MAX_POINT_LIGHTS = 3;
 const int MAX_SPOT_LIGHTS = 3;
@@ -77,7 +76,7 @@ float CalcOmniShadowFactor(PointLight light, int shadowIndex)
     closest *= omniShadowMaps[shadowIndex].farPlane;
     
     float current = length(fragToLight);
-    float bias = 0.05f;
+    float bias = 0.005f;
     float shadow = current - bias > closest ? 1.0f : 0.0f;
     
     return shadow;
@@ -209,10 +208,14 @@ vec4 CalcSpotLights()
 
 void main()
 {
+    
     vec4 finalColour = CalcDirectionalLight();
     finalColour += CalcPointLights();
-    finalColour += CalcSpotLights();
+    //finalColour += CalcSpotLights();
     colour = texture(theTexture, TexCoord) * finalColour;
-    //colour = vec4(FragPos, 1.0f);
-    //depth = colour;
+     
+    /*
+    vec2 mapCoord = 2.0 * TexCoord - 1.0;
+    colour = texture(omniShadowMaps[0].shadowMap, vec3(1.0, mapCoord.xy));
+     */
 }

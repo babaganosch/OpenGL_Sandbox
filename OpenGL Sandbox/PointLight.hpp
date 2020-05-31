@@ -30,6 +30,8 @@ public:
                   GLuint diffuseIntensityLocation, GLuint positionLocation,
                   GLuint constantLocation, GLuint linearLocation, GLuint exponentLocation);
     
+    void SetPosition(glm::vec3 pos) { position = pos; }
+    
     std::vector<glm::mat4> CalculateLightTransform();
     GLfloat GetFarPlane() { return farPlane; }
     glm::vec3 GetPosition() { return position; }

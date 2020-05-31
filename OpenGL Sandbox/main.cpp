@@ -84,9 +84,13 @@ GLfloat deltaTime = 0.0f;
 GLfloat lastTime = 0.0f;
 GLfloat blackHawkAngle = 0.0f;
 
+bool activeOmniShadowPass = true;
 bool activeMotionBlur = false;
 bool activeParticles  = true;
 bool showHalfScreenOnly = false;
+
+vec3 blueLightPos = vec3(0.0f);
+vec3 greenLightPos = vec3(-4.0f, 2.0f, 3.0f);
 
 void CalcAverageNormals(unsigned int* indices, unsigned int indiceCount, GLfloat* vertices, unsigned int verticeCount, unsigned int vLength, unsigned int normalOffset)
 {
@@ -223,8 +227,6 @@ void RenderScene()
     xwing.RenderModel();
 
     /* BLACKHAWK */
-    blackHawkAngle += 0.1f;
-    if (blackHawkAngle > 360.0f) blackHawkAngle = 0.1f;
     model = mat4(1.0f);
     model = rotate(model, -blackHawkAngle * toRadians, vec3(0.0f, 1.0f, 0.0f));
     model = translate(model, vec3(-7.0f, 2.0f, 0.0f));
@@ -259,6 +261,22 @@ void RenderScene()
     dullMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
     ball.RenderModel();
     
+    /* LIGHTBALL 1 (BLUE) */
+    model = mat4(1.0f);
+    model = translate(model, blueLightPos);
+    model = scale(model, vec3(0.002f, 0.002f, 0.002f));
+    glUniformMatrix4fv(uniformModel, 1, GL_FALSE, value_ptr(model));
+    shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
+    ball.RenderModel();
+    
+    /* LIGHTBALL 2 (GREEN) */
+    model = mat4(1.0f);
+    model = translate(model, greenLightPos);
+    model = scale(model, vec3(0.002f, 0.002f, 0.002f));
+    glUniformMatrix4fv(uniformModel, 1, GL_FALSE, value_ptr(model));
+    shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
+    ball.RenderModel();
+    
 }
 
 void DirectionalShadowMapPass(DirectionalLight* light)
@@ -283,8 +301,6 @@ void OmniShadowMapPass(PointLight* light)
 {
     omniShadowShader.UseShader();
     
-    glViewport(0, 0, light->GetShadowMap()->GetShadowWidth(), light->GetShadowMap()->GetShadowHeight());
-    
     light->GetShadowMap()->Write();
     glClear(GL_DEPTH_BUFFER_BIT);
     
@@ -292,12 +308,14 @@ void OmniShadowMapPass(PointLight* light)
     uniformOmniLightPos = omniShadowShader.GetOmniLightPosLocation();
     uniformFarPlane = omniShadowShader.GetFarPlaneLocation();
     
-    glUniform3f(uniformOmniLightPos, light->GetPosition().x, light->GetPosition().y, light->GetPosition().z);
+    vec3 lightPosition = light->GetPosition();
+    glUniform3f(uniformOmniLightPos, lightPosition.x, lightPosition.y, lightPosition.z);
     glUniform1f(uniformFarPlane, light->GetFarPlane());
     omniShadowShader.SetLightMatrices(light->CalculateLightTransform());
     
     RenderScene();
     
+    glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
@@ -370,19 +388,20 @@ void RenderPass(mat4 projectionMatrix, mat4 viewMatrix)
     renderer.Clear();
     glEnable(GL_DEPTH_TEST);
     
+    vec3 cameraPos = camera.getCameraPosition();
     glUniformMatrix4fv(uniformProjection, 1, GL_FALSE, value_ptr(projectionMatrix));
     glUniformMatrix4fv(uniformView, 1, GL_FALSE, value_ptr(viewMatrix));
-    glUniform3f(uniformEyePosition, camera.getCameraPosition().x, camera.getCameraPosition().y, camera.getCameraPosition().z);
-
-    shaderList[0].SetDirectionalLight(&mainLight);
-    shaderList[0].SetPointLights(pointLights, pointLightCount, 3, 0);
-    shaderList[0].SetSpotLights(spotLights, spotLightCount, 3 + pointLightCount, pointLightCount);
+    glUniform3f(uniformEyePosition, cameraPos.x, cameraPos.y, cameraPos.z);
     mat4 matrix = mainLight.CalculateLightTransform();
-    shaderList[0].SetDirectionalLightTransform(&matrix);
     
+    shaderList[0].SetDirectionalLight(&mainLight);
+    shaderList[0].SetDirectionalLightTransform(&matrix);
     mainLight.GetShadowMap()->Read(GL_TEXTURE2);
     shaderList[0].SetTexture(1);
     shaderList[0].SetDirectionalShadowMap(2);
+    
+    shaderList[0].SetPointLights(pointLights, pointLightCount, 3, 0);
+    shaderList[0].SetSpotLights(spotLights, spotLightCount, 3 + pointLightCount, pointLightCount);
     
     // Let one spotlight follow the camera
     glm::vec3 handPosition = camera.getCameraPosition();
@@ -418,7 +437,7 @@ int main() {
     screenQuad = Quad();
     screenQuad.Init();
     
-    camera = Camera(vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 1.0f, 0.0f), -88.0f, 0.0f, 5.0f, 0.5f);
+    camera = Camera(vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 1.0f, 0.0f), 0.0f, 0.0f, 5.0f, 0.5f);
     
     brickTexture = Texture((char*)"Textures/brick.png");
     brickTexture.LoadTextureA();
@@ -448,28 +467,30 @@ int main() {
     
     mainLight = DirectionalLight(2048, 2048,
                                  1.0f, 1.0f, 1.0f,
-                                 0.2f, 0.3f,
+                                 0.0f, 0.1f,
                                  0.0f, -15.0f, -10.0f);
     
     
-    pointLights[0] = PointLight(1024, 1024,
+    pointLights[0] = PointLight(512, 512,
                                 0.01f, 100.0f,
-                                0.0f, 0.0f, 1.0f,
-                                0.0f, 0.1f,
+                                0.0f, 0.0f, 1.0f,   // Blue
+                                0.3f, 1.0f,
                                 0.0f, 0.0f, 0.0f,
                                 0.3f, 0.2f, 0.1f);
     pointLightCount++;
-    pointLights[1] = PointLight(1024, 1024,
+    
+    
+    pointLights[1] = PointLight(512, 512,
                                 0.01f, 100.0f,
-                                0.0f, 1.0f, 0.0f,
-                                0.0f, 0.1f,
-                                -4.0f, 2.0f, 0.0f,
+                                0.0f, 1.0f, 0.0f,   // Green
+                                0.3f, 0.8f,
+                                -4.0f, 2.0f, 3.0f,
                                 0.3f, 0.1f, 0.1f);
     pointLightCount++;
     
-    
-    spotLights[0] = SpotLight(1024, 1024,
-                              0.01f, 100.0f,
+    /*
+    spotLights[0] = SpotLight(2048, 2048,
+                              0.01f, 1000.0f,
                               1.0f, 1.0f, 1.0f,
                               0.0f, 2.0f,
                               0.0f, 0.0f, 0.0f,
@@ -478,8 +499,8 @@ int main() {
                               28.0f);
     spotLightCount++;
     
-    spotLights[1] = SpotLight(1024, 1024,
-                              0.01f, 100.0f,
+    spotLights[1] = SpotLight(2048, 2048,
+                              0.01f, 1000.0f,
                               1.0f, 1.0f, 1.0f,
                               0.0f, 1.0f,
                               0.0f, -1.5f, 0.0f,
@@ -487,8 +508,8 @@ int main() {
                               1.0f, 0.0f, 0.0f,
                               20.0f);
     spotLightCount++;
-    
-    mat4 projection = perspective(45.0f, mainWindow.getBufferWidth() / mainWindow.getBufferHeight(), 0.1f, 100.f);
+    */
+    mat4 projection = perspective(45.0f, mainWindow.getBufferWidth() / mainWindow.getBufferHeight(), 0.01f, 1000.f);
    
     mat4 viewMatrix = camera.calculateViewMatrix();
     mat4 oldViewProjectionMatrix = projection * viewMatrix;
@@ -503,6 +524,12 @@ int main() {
         GLfloat now = glfwGetTime();
         deltaTime = now - lastTime;
         lastTime = now;
+        
+        blueLightPos.x -= (deltaTime / 5.f);
+        pointLights[0].SetPosition(blueLightPos);
+        
+        blackHawkAngle += 0.1f;
+        if (blackHawkAngle > 360.0f) blackHawkAngle = 0.1f;
         
         // Input
         glfwPollEvents( );
@@ -522,18 +549,26 @@ int main() {
             mainWindow.getKeys()[GLFW_KEY_I] = false;
             showHalfScreenOnly = !showHalfScreenOnly;
         }
-            
-        /* Regular render pass */
-        DirectionalShadowMapPass(&mainLight);
-        for (GLuint i = 0; i < pointLightCount; i++)
-        {
-            OmniShadowMapPass(&pointLights[i]);
+        if (mainWindow.getKeys()[GLFW_KEY_L]) {
+            mainWindow.getKeys()[GLFW_KEY_L] = false;
+            activeOmniShadowPass = !activeOmniShadowPass;
         }
-        for (GLuint i = 0; i < spotLightCount; i++)
-        {
-            OmniShadowMapPass(&spotLights[i]);
+            
+        /* Directional ShadowMap Pass */
+        DirectionalShadowMapPass(&mainLight);
+        /* Omni-Directional ShadowMap Pass */
+        if (activeOmniShadowPass) {
+            for (GLuint i = 0; i < pointLightCount; i++)
+            {
+                OmniShadowMapPass(&pointLights[i]);
+            }
+            for (GLuint i = 0; i < spotLightCount; i++)
+            {
+                OmniShadowMapPass(&spotLights[i]);
+            }
         }
         
+        /* Regular render pass */
         renderer.RenderToTexture();
         RenderPass(projection, viewMatrix);
         
@@ -543,7 +578,11 @@ int main() {
         
         /* Post FX */
         PostProcessingPass(projection, viewMatrix, &oldViewProjectionMatrix);
-        
+        /*
+        renderer.Reset();
+        passthrough.UseShader();
+        screenQuad.RenderTexture(  pointLights[0].GetShadowMap()->GetTexture()  );
+        */
         
         /*glClearColor( 0.0f, 0.0f, 0.0f, 1.0f );
         glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
