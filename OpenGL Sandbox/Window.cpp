@@ -20,7 +20,7 @@ Window::Window()
     
     for (size_t i = 0; i < 1024; i++)
     {
-        keys[i] = 0;
+        keys[i] = false;
     }
 }
 
