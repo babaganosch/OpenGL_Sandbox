@@ -9,6 +9,7 @@
 #ifndef CommonValues_h
 #define CommonValues_h
 
+#define _USE_MATH_DEFINES
 #include <cmath>
 #include <algorithm>
 #include <glm/glm.hpp>
