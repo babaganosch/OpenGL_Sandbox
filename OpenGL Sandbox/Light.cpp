@@ -26,3 +26,8 @@ Light::Light(GLfloat shadowWidth, GLfloat shadowHeight, GLfloat red, GLfloat gre
 }
 
 Light::~Light() { }
+
+void Light::SetColour(glm::vec3 col)
+{
+    colour = col;
+}

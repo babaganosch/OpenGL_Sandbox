@@ -26,6 +26,7 @@ public:
     ~Light();
     
     ShadowMap* GetShadowMap() { return shadowMap; }
+    void SetColour(glm::vec3 col);
     
 protected:
     glm::vec3 colour;

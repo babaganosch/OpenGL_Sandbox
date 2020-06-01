@@ -33,6 +33,8 @@
 #include "SpotLight.hpp"
 #include "Material.hpp"
 
+#include "Player.hpp"
+
 #include "Renderer.hpp"
 
 #include "ParticleSystem.hpp"
@@ -79,6 +81,8 @@ Model xwing;
 Model blackHawk;
 Model deLorean;
 Model ball;
+
+Player player;
 
 DirectionalLight mainLight;
 PointLight pointLights[MAX_POINT_LIGHTS];
@@ -257,9 +261,7 @@ void RenderScene()
     blackHawk.RenderModel();
     
     // DELOREAN
-    model = mat4(1.0f);
-    model = translate(model, vec3(3.0f, -1.5f, 4.0f));
-    model = scale(model, vec3(0.005f, 0.005f, 0.005f));
+    model = player.GetModelMatrix();
     glUniformMatrix4fv(uniformModel, 1, GL_FALSE, value_ptr(model));
     shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
     deLorean.RenderModel();
@@ -443,6 +445,8 @@ int main() {
     renderer = Renderer();
     renderer.Init(mainWindow.getBufferWidth(), mainWindow.getBufferHeight());
     
+    player = Player();
+    
     CreateObjects();
     CreateShaders();
     
@@ -554,6 +558,8 @@ int main() {
         deltaTime = now - lastTime;
         lastTime = now;
         
+        player.Update(&mainWindow, deltaTime);
+        
         blueLightPos.x -= (deltaTime / 5.f);
         pointLights[0].SetPosition(blueLightPos);
         
@@ -583,7 +589,7 @@ int main() {
         }
         if (mainWindow.getKeys()[GLFW_KEY_L]) {
             mainWindow.getKeys()[GLFW_KEY_L] = false;
-            shaderList[0].Toggle();
+            spotLights[0].Toggle();
         }
             
         /* Directional ShadowMap Pass */
@@ -610,6 +616,8 @@ int main() {
         
         /* Post FX */
         PostProcessingPass(projection, viewMatrix, &oldViewProjectionMatrix);
+        
+        
         /*
         renderer.Reset();
         passthrough.UseShader();
