@@ -10,8 +10,9 @@
 #define Player_hpp
 
 #include <stdio.h>
+#include <algorithm>
 #include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtx/transform.hpp>
 #include "Window.hpp"
 
 class Player
@@ -22,10 +23,13 @@ public:
     
     void Update(Window* window, GLfloat dt);
     glm::mat4 GetModelMatrix();
+    glm::vec3 GetModelPosition();
     
 private:
+    glm::mat4 model;
     glm::vec3 position, scale;
-    GLfloat angle;
+    
+    GLfloat angle, maxSpeed, rotateSpeed, acceleration, currentSpeed;
 };
 
 #endif /* Player_hpp */

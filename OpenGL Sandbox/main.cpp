@@ -33,7 +33,7 @@
 #include "SpotLight.hpp"
 #include "Material.hpp"
 
-#include "Player.hpp"
+#include "GameHandler.hpp"
 
 #include "Renderer.hpp"
 
@@ -66,7 +66,10 @@ ParticleSystem ps0;
 ParticleSystem ps1;
 ParticleSystem ps2;
 ParticleSystem ps3;
+
 Quad screenQuad;
+
+GameHandler gameHandler;
 
 Texture brickTexture;
 Texture dirtTexture;
@@ -81,8 +84,6 @@ Model xwing;
 Model blackHawk;
 Model deLorean;
 Model ball;
-
-Player player;
 
 DirectionalLight mainLight;
 PointLight pointLights[MAX_POINT_LIGHTS];
@@ -100,7 +101,7 @@ bool activeParticles  = true;
 bool showHalfScreenOnly = false;
 
 vec3 blueLightPos  = vec3(0.0f);
-vec3 greenLightPos = vec3(-4.0f, 2.0f, 3.0f);
+vec3 scoreLightPos = vec3(-4.0f, 0.0f, 3.0f);
 
 #if DEBUG
 void CheckErrors()
@@ -261,7 +262,7 @@ void RenderScene()
     blackHawk.RenderModel();
     
     // DELOREAN
-    model = player.GetModelMatrix();
+    model = gameHandler.GetModelMatrix();
     glUniformMatrix4fv(uniformModel, 1, GL_FALSE, value_ptr(model));
     shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
     deLorean.RenderModel();
@@ -290,9 +291,9 @@ void RenderScene()
     shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
     ball.RenderModel();
     
-    // LIGHTBALL 2 (GREEN)
+    // LIGHTBALL 2 (SCORE)
     model = mat4(1.0f);
-    model = translate(model, greenLightPos);
+    model = translate(model, pointLights[1].GetPosition());
     model = scale(model, vec3(0.002f, 0.002f, 0.002f));
     glUniformMatrix4fv(uniformModel, 1, GL_FALSE, value_ptr(model));
     shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
@@ -439,16 +440,16 @@ void RenderPass(mat4 projectionMatrix, mat4 viewMatrix)
 
 int main() {
     
-    mainWindow = Window(1366, 768);
+    mainWindow = Window(1366, 768);    // 1920x1080, 1366x768
     mainWindow.Initialise();
     
     renderer = Renderer();
     renderer.Init(mainWindow.getBufferWidth(), mainWindow.getBufferHeight());
     
-    player = Player();
-    
     CreateObjects();
     CreateShaders();
+
+    gameHandler = GameHandler();
     
     ps0 = ParticleSystem(1000);
     ps0.Init(vec3(1.3f, 0.25f, 1.8f));
@@ -499,7 +500,7 @@ int main() {
                                  0.0f, -15.0f, -10.0f);
     
     
-    pointLights[0] = PointLight(2048, 2048,
+    pointLights[0] = PointLight(512, 512,
                                 0.01f, 100.0f,
                                 0.0f, 0.0f, 1.0f,   // Blue
                                 0.3f, 1.0f,
@@ -509,16 +510,16 @@ int main() {
     
     
     
-    /*
-    pointLights[1] = PointLight(2048, 2048,
+    
+    pointLights[1] = PointLight(512, 512,
                                 0.01f, 100.0f,
                                 0.0f, 1.0f, 0.0f,   // Green
                                 0.3f, 0.8f,
-                                -4.0f, 2.0f, 3.0f,
+                                -4.0f, 0.0f, 3.0f,
                                 0.3f, 0.1f, 0.1f);
     pointLightCount++;
     
-    
+    /*
     spotLights[0] = SpotLight(2048, 2048,
                               0.01f, 1000.0f,
                               1.0f, 1.0f, 1.0f,
@@ -558,10 +559,10 @@ int main() {
         deltaTime = now - lastTime;
         lastTime = now;
         
-        player.Update(&mainWindow, deltaTime);
+        gameHandler.Update(&mainWindow, &pointLights[1], deltaTime);
         
         blueLightPos.x -= (deltaTime / 5.f);
-        pointLights[0].SetPosition(blueLightPos);
+        pointLights[0].SetPosition(blueLightPos);   
         
         blackHawkAngle += deltaTime * 3.f;
         if (blackHawkAngle > 360.0f) blackHawkAngle = 0.1f;
