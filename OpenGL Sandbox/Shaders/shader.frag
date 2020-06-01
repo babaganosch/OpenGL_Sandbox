@@ -8,8 +8,8 @@ in vec4 DirectionalLightSpacePos;
 
 layout(location = 0) out vec4 colour;
 
-const int MAX_POINT_LIGHTS = 2;
-const int MAX_SPOT_LIGHTS = 2;
+const int MAX_POINT_LIGHTS = 3;
+const int MAX_SPOT_LIGHTS = 3;
 
 struct Light
 {
@@ -235,7 +235,7 @@ void main()
     
     vec4 finalColour = CalcDirectionalLight();
     finalColour += CalcPointLights();
-    //finalColour += CalcSpotLights();
+    finalColour += CalcSpotLights();
     colour = texture(theTexture, TexCoord) * finalColour;
      
     /*
