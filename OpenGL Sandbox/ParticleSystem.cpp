@@ -6,6 +6,7 @@
 //  Copyright © 2020 Lars Andersson. All rights reserved.
 //
 
+#define _USE_MATH_DEFINES
 #include "ParticleSystem.hpp"
 #include "CommonValues.hpp"
 #include <cmath>

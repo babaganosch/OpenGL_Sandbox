@@ -13,7 +13,6 @@ SpotLight::SpotLight() : PointLight()
     direction = glm::vec3(0.0f, -1.0f, 0.0f);
     edge = 0;
     procEdge = cosf(glm::radians(edge));
-    isOn = true;
 }
 
 SpotLight::SpotLight(GLuint shadowWidth, GLuint shadowHeight,
@@ -29,7 +28,6 @@ PointLight(shadowWidth, shadowHeight, near, far, red, green, blue, aIntensity, d
     direction = glm::normalize(glm::vec3(xDir, yDir, zDir));
     edge = edg;
     procEdge = cosf(glm::radians(edge));
-    isOn = true;
 }
 
 SpotLight::~SpotLight()
@@ -43,14 +41,8 @@ void SpotLight::UseLight(GLuint ambientIntensityLocation, GLuint ambientColourLo
               GLuint edgeLocation)
 {
     glUniform3f(ambientColourLocation, colour.r, colour.g, colour.b);
-    if (isOn)
-    {
-        glUniform1f(ambientIntensityLocation, ambientIntensity);
-        glUniform1f(diffuseIntensityLocation, diffuseIntensity);
-    } else {
-        glUniform1f(ambientIntensityLocation, 0.0f);
-        glUniform1f(diffuseIntensityLocation, 0.0f);
-    }
+    glUniform1f(ambientIntensityLocation, ambientIntensity);
+    glUniform1f(diffuseIntensityLocation, diffuseIntensity);
     
     glUniform3f(positionLocation, position.x, position.y, position.z);
     glUniform1f(constantLocation, constant);

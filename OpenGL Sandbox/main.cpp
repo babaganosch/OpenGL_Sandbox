@@ -581,10 +581,6 @@ int main() {
             mainWindow.getKeys()[GLFW_KEY_K] = false;
             activeOmniShadowPass = !activeOmniShadowPass;
         }
-        if (mainWindow.getKeys()[GLFW_KEY_L]) {
-            mainWindow.getKeys()[GLFW_KEY_L] = false;
-            spotLights[0].Toggle();
-        }
             
         /* Directional ShadowMap Pass */
         DirectionalShadowMapPass(&mainLight);
