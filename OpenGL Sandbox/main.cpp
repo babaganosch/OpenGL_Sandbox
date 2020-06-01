@@ -491,11 +491,11 @@ int main() {
     
     mainLight = DirectionalLight(1024, 1024,
                                  1.0f, 1.0f, 1.0f,
-                                 0.1f, 0.2f,
+                                 0.1f, 0.1f,
                                  0.0f, -15.0f, -10.0f);
     
     
-    pointLights[0] = PointLight(512, 512,
+    pointLights[0] = PointLight(2048, 2048,
                                 0.01f, 100.0f,
                                 0.0f, 0.0f, 1.0f,   // Blue
                                 0.3f, 1.0f,
@@ -506,7 +506,7 @@ int main() {
     
     
     /*
-    pointLights[1] = PointLight(512, 512,
+    pointLights[1] = PointLight(2048, 2048,
                                 0.01f, 100.0f,
                                 0.0f, 1.0f, 0.0f,   // Green
                                 0.3f, 0.8f,
@@ -580,6 +580,10 @@ int main() {
         if (mainWindow.getKeys()[GLFW_KEY_K]) {
             mainWindow.getKeys()[GLFW_KEY_K] = false;
             activeOmniShadowPass = !activeOmniShadowPass;
+        }
+        if (mainWindow.getKeys()[GLFW_KEY_L]) {
+            mainWindow.getKeys()[GLFW_KEY_L] = false;
+            shaderList[0].Toggle();
         }
             
         /* Directional ShadowMap Pass */
