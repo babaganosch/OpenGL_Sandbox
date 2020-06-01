@@ -491,7 +491,7 @@ int main() {
     
     mainLight = DirectionalLight(1024, 1024,
                                  1.0f, 1.0f, 1.0f,
-                                 0.1f, 0.3f,
+                                 0.1f, 0.2f,
                                  0.0f, -15.0f, -10.0f);
     
     
