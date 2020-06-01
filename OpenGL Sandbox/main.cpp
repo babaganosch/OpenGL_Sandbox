@@ -1,5 +1,11 @@
 #define STB_IMAGE_IMPLEMENTATION
 
+#if DEBUG
+#define checkGLError() CheckErrors()
+#else
+#define checkGLError()
+#endif
+
 #include <iostream>
 #include <string.h>
 #include <cmath>
@@ -89,8 +95,21 @@ bool activeMotionBlur = false;
 bool activeParticles  = true;
 bool showHalfScreenOnly = false;
 
-vec3 blueLightPos = vec3(0.0f);
+vec3 blueLightPos  = vec3(0.0f);
 vec3 greenLightPos = vec3(-4.0f, 2.0f, 3.0f);
+
+#if DEBUG
+void CheckErrors()
+{
+    GLenum errCode;
+    const GLubyte* errString;
+    while ((errCode = glGetError()) != GL_NO_ERROR)
+    {
+        errString = gluErrorString(errCode);
+        fprintf(stderr, "OpenGL Error: %s\n", errString);
+    }
+}
+#endif
 
 void CalcAverageNormals(unsigned int* indices, unsigned int indiceCount, GLfloat* vertices, unsigned int verticeCount, unsigned int vLength, unsigned int normalOffset)
 {
@@ -194,15 +213,15 @@ void CreateShaders()
 
 void RenderScene()
 {
-    /* TRI1 */
+    // TRI1
     mat4 model(1.0f);
     model = translate(model, vec3(0.0f, 0.0f, -2.5f));
     glUniformMatrix4fv(uniformModel, 1, GL_FALSE, value_ptr(model));
     brickTexture.UseTexture();
     shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
     meshList[0]->RenderMesh();
-
-    /* TRI2 */
+    
+    // TRI2
     model = mat4(1.0f);
     model = translate(model, vec3(0.0f, 4.0f, -2.5f));
     glUniformMatrix4fv(uniformModel, 1, GL_FALSE, value_ptr(model));
@@ -210,7 +229,7 @@ void RenderScene()
     dullMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
     meshList[1]->RenderMesh();
 
-    /* FLOOR */
+    // FLOOR
     model = mat4(1.0f);
     model = translate(model, vec3(0.0f, -2.0f, 0.0f));
     glUniformMatrix4fv(uniformModel, 1, GL_FALSE, value_ptr(model));
@@ -218,7 +237,7 @@ void RenderScene()
     dullMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
     meshList[2]->RenderMesh();
 
-    /* XWING */
+    // XWING
     model = mat4(1.0f);
     model = translate(model, vec3(-7.0f, 0.0f, 10.0f));
     model = scale(model, vec3(0.006f, 0.006f, 0.006f));
@@ -226,7 +245,7 @@ void RenderScene()
     shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
     xwing.RenderModel();
 
-    /* BLACKHAWK */
+    // BLACKHAWK
     model = mat4(1.0f);
     model = rotate(model, -blackHawkAngle * toRadians, vec3(0.0f, 1.0f, 0.0f));
     model = translate(model, vec3(-7.0f, 2.0f, 0.0f));
@@ -237,7 +256,7 @@ void RenderScene()
     shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
     blackHawk.RenderModel();
     
-    /* DELOREAN */
+    // DELOREAN
     model = mat4(1.0f);
     model = translate(model, vec3(3.0f, -1.5f, 4.0f));
     model = scale(model, vec3(0.005f, 0.005f, 0.005f));
@@ -245,7 +264,7 @@ void RenderScene()
     shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
     deLorean.RenderModel();
     
-    /* BALL1 */
+    // BALL1
     model = mat4(1.0f);
     model = translate(model, vec3(-3.0f, -1.7f, 0.0f));
     model = scale(model, vec3(0.005f, 0.005f, 0.005f));
@@ -253,7 +272,7 @@ void RenderScene()
     shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
     ball.RenderModel();
     
-    /* BALL2 */
+    // BALL2
     model = mat4(1.0f);
     model = translate(model, vec3(-3.0f, -1.7f, 1.25f));
     model = scale(model, vec3(0.005f, 0.005f, 0.005f));
@@ -261,7 +280,7 @@ void RenderScene()
     dullMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
     ball.RenderModel();
     
-    /* LIGHTBALL 1 (BLUE) */
+    // LIGHTBALL 1 (BLUE)
     model = mat4(1.0f);
     model = translate(model, blueLightPos);
     model = scale(model, vec3(0.002f, 0.002f, 0.002f));
@@ -269,7 +288,7 @@ void RenderScene()
     shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
     ball.RenderModel();
     
-    /* LIGHTBALL 2 (GREEN) */
+    // LIGHTBALL 2 (GREEN)
     model = mat4(1.0f);
     model = translate(model, greenLightPos);
     model = scale(model, vec3(0.002f, 0.002f, 0.002f));
@@ -286,14 +305,16 @@ void DirectionalShadowMapPass(DirectionalLight* light)
     glViewport(0, 0, light->GetShadowMap()->GetShadowWidth(), light->GetShadowMap()->GetShadowHeight());
     
     light->GetShadowMap()->Write();
+    
     glClear(GL_DEPTH_BUFFER_BIT);
     
+    uniformSpecularIntensity = directionalShadowShader.GetSpecularIntensityLocation();
+    uniformShininess = directionalShadowShader.GetShininessLocation();
     uniformModel = directionalShadowShader.GetModelLocation();
     mat4 matrix = light->CalculateLightTransform();
     directionalShadowShader.SetDirectionalLightTransform(&matrix);
     
     RenderScene();
-    
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
@@ -304,6 +325,8 @@ void OmniShadowMapPass(PointLight* light)
     light->GetShadowMap()->Write();
     glClear(GL_DEPTH_BUFFER_BIT);
     
+    uniformSpecularIntensity = directionalShadowShader.GetSpecularIntensityLocation();
+    uniformShininess = directionalShadowShader.GetShininessLocation();
     uniformModel = omniShadowShader.GetModelLocation();
     uniformOmniLightPos = omniShadowShader.GetOmniLightPosLocation();
     uniformFarPlane = omniShadowShader.GetFarPlaneLocation();
@@ -315,7 +338,7 @@ void OmniShadowMapPass(PointLight* light)
     
     RenderScene();
     
-    glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
+    //glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
@@ -404,7 +427,7 @@ void RenderPass(mat4 projectionMatrix, mat4 viewMatrix)
     shaderList[0].SetSpotLights(spotLights, spotLightCount, 3 + pointLightCount, pointLightCount);
     
     // Let one spotlight follow the camera
-    glm::vec3 handPosition = camera.getCameraPosition();
+    glm::vec3 handPosition = cameraPos;
     handPosition.y -= 0.3f;
     spotLights[0].SetFlash(handPosition, camera.getCameraDirection());
     
@@ -520,6 +543,9 @@ int main() {
     
     while ( !mainWindow.getShouldClose() )
     {
+        // Check errors
+        checkGLError();
+        
         // Timing
         GLfloat now = glfwGetTime();
         deltaTime = now - lastTime;
@@ -528,7 +554,7 @@ int main() {
         blueLightPos.x -= (deltaTime / 5.f);
         pointLights[0].SetPosition(blueLightPos);
         
-        blackHawkAngle += 0.1f;
+        blackHawkAngle += deltaTime * 3.f;
         if (blackHawkAngle > 360.0f) blackHawkAngle = 0.1f;
         
         // Input
@@ -536,7 +562,6 @@ int main() {
         camera.keyControl(deltaTime, mainWindow.getKeys());
         camera.mouseControl(mainWindow.getXChange(), mainWindow.getYChange());
         viewMatrix = camera.calculateViewMatrix();
-        
         if (mainWindow.getKeys()[GLFW_KEY_P]) {
             mainWindow.getKeys()[GLFW_KEY_P] = false;
             activeParticles = !activeParticles;
@@ -556,6 +581,7 @@ int main() {
             
         /* Directional ShadowMap Pass */
         DirectionalShadowMapPass(&mainLight);
+        
         /* Omni-Directional ShadowMap Pass */
         if (activeOmniShadowPass) {
             for (GLuint i = 0; i < pointLightCount; i++)
@@ -573,8 +599,7 @@ int main() {
         RenderPass(projection, viewMatrix);
         
         /* Particles */
-        if (activeParticles)
-            ParticleRenderingPass(projection, viewMatrix);
+        if (activeParticles) ParticleRenderingPass(projection, viewMatrix);
         
         /* Post FX */
         PostProcessingPass(projection, viewMatrix, &oldViewProjectionMatrix);
