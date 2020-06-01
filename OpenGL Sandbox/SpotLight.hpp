@@ -32,11 +32,13 @@ public:
                   GLuint edgeLocation);
     
     void SetFlash(glm::vec3 pos, glm::vec3 dir);
+    void Toggle() { isOn = !isOn; }
     
 private:
     glm::vec3 direction;
     
     GLfloat edge, procEdge;
+    bool isOn;
 };
 
 #endif /* SpotLight_hpp */

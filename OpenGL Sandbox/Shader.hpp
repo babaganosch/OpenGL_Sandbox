@@ -50,6 +50,7 @@ public:
     
     GLuint GetOmniLightPosLocation() { return uniformOmniLightPos; }
     GLuint GetFarPlaneLocation() { return uniformFarPlane; }
+    GLuint GetUseOmniShadow() { return uniformUseOmniShadow; }
     
     GLuint GetViewProjectionInverseMatrix() { return uniformViewProjectionInverseMatrix; }
     GLuint GetPreviousViewProjectionMatrix() { return uniformPreviousViewProjectionMatrix; }
@@ -79,6 +80,7 @@ private:
     GLuint uniformOmniLightPos, uniformFarPlane;
     
     GLuint uniformLightMatrices[6];
+    GLuint uniformUseOmniShadow;
     
     GLuint uniformShowHalfScreenOnly;
     

@@ -8,8 +8,8 @@ in vec4 DirectionalLightSpacePos;
 
 layout(location = 0) out vec4 colour;
 
-const int MAX_POINT_LIGHTS = 3;
-const int MAX_SPOT_LIGHTS = 3;
+const int MAX_POINT_LIGHTS = 2;
+const int MAX_SPOT_LIGHTS = 2;
 
 struct Light
 {
@@ -54,6 +54,7 @@ struct Material
 
 uniform int pointLightCount;
 uniform int spotLightCount;
+uniform bool useOmniShadow;
 
 uniform DirectionalLight directionalLight;
 uniform PointLight pointLights[MAX_POINT_LIGHTS];
@@ -69,15 +70,38 @@ uniform vec3 eyePosition;
 
 int sampleRate = 2;
 
+vec3 sampleOffsetDirections[20] = vec3[]
+(
+    vec3(1, 1, 1),  vec3(1, -1, 1), vec3(-1, -1, 1),    vec3(-1, 1, 1),
+    vec3(1, 1, -1), vec3(1, -1, -1),vec3(-1, -1,-1),    vec3(-1, 1, -1),
+    vec3(1, 1, 0),  vec3(1, -1, 0), vec3(-1, -1, 0),    vec3(-1, 1, 0),
+    vec3(1, 0, 1),  vec3(-1, 0, 1), vec3(1, 0, -1),     vec3(-1, 0, -1),
+    vec3(0, 1, 1),  vec3(0, -1, 1), vec3(0, -1, -1),    vec3(0, 1, -1)
+);
+
 float CalcOmniShadowFactor(PointLight light, int shadowIndex)
 {
     vec3 fragToLight = FragPos - light.position;
-    float closest = texture(omniShadowMaps[shadowIndex].shadowMap, fragToLight).r;
-    closest *= omniShadowMaps[shadowIndex].farPlane;
-    
     float current = length(fragToLight);
-    float bias = 0.005f;
-    float shadow = current - bias > closest ? 1.0f : 0.0f;
+    
+    float shadow = 0.0f;
+    float bias = 0.05f;
+    int samples = 20;
+    
+    float viewDistance = length(eyePosition - FragPos);
+    float diskRadius = (1.0f + (viewDistance / omniShadowMaps[shadowIndex].farPlane )) / 25.0f;
+    
+    for (int i = 0; i < samples; i++)
+    {
+        float closest = texture(omniShadowMaps[shadowIndex].shadowMap, fragToLight + sampleOffsetDirections[i] * diskRadius).r;
+        closest *= omniShadowMaps[shadowIndex].farPlane;
+        if (current - bias > closest)
+        {
+            shadow += 1.0f;
+        }
+    }
+    
+    shadow /= float(samples);
     
     return shadow;
 }
@@ -91,7 +115,7 @@ float CalcDirectionalShadowFactor(DirectionalLight light)
     vec3 normal = normalize(Normal);
     vec3 lightDir = normalize(light.direction);
     
-    float bias = max(0.05 * (1.0 - dot(normal, lightDir)), 0.005);
+    float bias = max(0.05 * (1.0 - dot(normal, lightDir)), 0.0005);
     
     float shadow = 0.0f;
     vec2 texelSize = 1.0 / textureSize(directionalShadowMap, 0);
@@ -158,7 +182,7 @@ vec4 CalcPointLight(PointLight pLight, int shadowIndex)
     float dist = length(direction);
     direction = normalize(direction);
     
-    float shadowFactor = CalcOmniShadowFactor(pLight, shadowIndex);
+    float shadowFactor = useOmniShadow ? CalcOmniShadowFactor(pLight, shadowIndex) : 0.0f;
     
     vec4 colour = CalcLightByDirection(pLight.base, direction, shadowFactor);
     float attenuation = pLight.exponent * dist * dist +

@@ -380,6 +380,7 @@ void Shader::CompileProgram()
     /* OMNI SHADOW */
     uniformOmniLightPos = glGetUniformLocation(shaderID, "lightPos");
     uniformFarPlane = glGetUniformLocation(shaderID, "farPlane");
+    uniformUseOmniShadow = glGetUniformLocation(shaderID, "useOmniShadow");
     
     for (GLuint i = 0; i < 6; i++)
     {

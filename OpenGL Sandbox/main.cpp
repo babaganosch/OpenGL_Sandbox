@@ -404,6 +404,7 @@ void RenderPass(mat4 projectionMatrix, mat4 viewMatrix)
     uniformEyePosition = shaderList[0].GetEyePositionLocation();
     uniformSpecularIntensity = shaderList[0].GetSpecularIntensityLocation();
     uniformShininess = shaderList[0].GetShininessLocation();
+    glUniform1i(shaderList[0].GetUseOmniShadow(), activeOmniShadowPass);
     
     mainWindow.resetViewport();
     
@@ -488,9 +489,9 @@ int main() {
     ball = Model();
     ball.LoadModel("Models/3d-model.obj");
     
-    mainLight = DirectionalLight(2048, 2048,
+    mainLight = DirectionalLight(1024, 1024,
                                  1.0f, 1.0f, 1.0f,
-                                 0.0f, 0.1f,
+                                 0.1f, 0.3f,
                                  0.0f, -15.0f, -10.0f);
     
     
@@ -503,6 +504,8 @@ int main() {
     pointLightCount++;
     
     
+    
+    /*
     pointLights[1] = PointLight(512, 512,
                                 0.01f, 100.0f,
                                 0.0f, 1.0f, 0.0f,   // Green
@@ -511,7 +514,7 @@ int main() {
                                 0.3f, 0.1f, 0.1f);
     pointLightCount++;
     
-    /*
+    
     spotLights[0] = SpotLight(2048, 2048,
                               0.01f, 1000.0f,
                               1.0f, 1.0f, 1.0f,
@@ -574,9 +577,13 @@ int main() {
             mainWindow.getKeys()[GLFW_KEY_I] = false;
             showHalfScreenOnly = !showHalfScreenOnly;
         }
+        if (mainWindow.getKeys()[GLFW_KEY_K]) {
+            mainWindow.getKeys()[GLFW_KEY_K] = false;
+            activeOmniShadowPass = !activeOmniShadowPass;
+        }
         if (mainWindow.getKeys()[GLFW_KEY_L]) {
             mainWindow.getKeys()[GLFW_KEY_L] = false;
-            activeOmniShadowPass = !activeOmniShadowPass;
+            spotLights[0].Toggle();
         }
             
         /* Directional ShadowMap Pass */
