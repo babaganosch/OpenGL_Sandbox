@@ -18,6 +18,11 @@ float CommonHelper::randf()
     return float(rand()) / float(RAND_MAX);
 }
 
+float CommonHelper::lerp(float a, float b, float t)
+{
+    return a + (t * (b - a));
+}
+
 void CommonHelper::concentricSampleDisk(float* dx, float* dy)
 {
     float r, theta;

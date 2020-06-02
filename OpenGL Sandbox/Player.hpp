@@ -14,6 +14,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtx/transform.hpp>
 #include "Window.hpp"
+#include "CommonValues.hpp"
 
 class Player
 {
@@ -29,7 +30,7 @@ private:
     glm::mat4 model;
     glm::vec3 position, scale;
     
-    GLfloat angle, maxSpeed, rotateSpeed, acceleration, currentSpeed;
+    GLfloat angle, maxSpeed, rotateSpeed, acceleration, currentSpeed, drift;
 };
 
 #endif /* Player_hpp */

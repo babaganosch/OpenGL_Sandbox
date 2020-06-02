@@ -22,6 +22,7 @@ namespace CommonHelper
 {
 
 float uniform_randf(const float from, const float to);
+float lerp( float a, float b, float t );
     
 float randf();
     

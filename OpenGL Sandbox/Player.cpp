@@ -16,6 +16,7 @@ Player::Player()
     currentSpeed = 0.0f;
     rotateSpeed = 0.07f;
     acceleration = 15.f;
+    drift = 0.0f;
 
     glm::mat4 R = glm::rotate(glm::radians(angle), glm::vec3(0.0f, 1.0f, 0.0f));
     glm::mat4 T = R * glm::translate(glm::vec3(3.0f, -2.0f, 4.0f)) * glm::scale(glm::vec3(0.005f, 0.005f, 0.005f));
@@ -30,7 +31,6 @@ Player::~Player()
 
 void Player::Update(Window* window, GLfloat dt)
 {
-    
     if (window->getKeys()[GLFW_KEY_UP])
     {
         currentSpeed -= dt * acceleration;
@@ -68,23 +68,40 @@ void Player::Update(Window* window, GLfloat dt)
             currentSpeed += dt * acceleration * brk;
         }
         // Left bumper
-        if (states.buttons[GLFW_GAMEPAD_BUTTON_LEFT_BUMPER])
+        if (states.buttons[GLFW_GAMEPAD_BUTTON_LEFT_BUMPER] && angle != 0) // No drifting unless turning some
         {
-            printf("Skreeeeeeet\n");
+            drift = CommonHelper::lerp(drift, 20.f * angle, dt * 2.0f);
+            rotateSpeed = 0.08;
+            maxSpeed = 30.f;
+        }
+        else if(drift)
+        {
+            drift = CommonHelper::lerp(drift, 0.0f, dt * 2.0f);
+            maxSpeed = 20.f;
+            rotateSpeed = 0.07;
         }
     }
    
-    currentSpeed = glm::clamp(currentSpeed, -maxSpeed, maxSpeed);
+    //currentSpeed = glm::clamp(currentSpeed, -maxSpeed, maxSpeed);
 
     glm::mat4 R = glm::rotate(glm::radians(angle), glm::vec3(0.0f, 1.0f, 0.0f));
     glm::mat4 T = R * glm::translate(glm::vec3(0.0f, 0.0f, currentSpeed));
-
+    
     model *= T;
-
-    if (currentSpeed > dt * acceleration * 0.5) {
+    if (currentSpeed > maxSpeed)
+    {
+        currentSpeed -= dt * acceleration * 1.1;
+    }
+    else if (currentSpeed < -maxSpeed)
+    {
+        currentSpeed += dt * acceleration * 1.1;
+    }
+    else if (currentSpeed > dt * acceleration * 0.5)
+    {
         currentSpeed -= dt * acceleration * 0.5;
     }
-    else if (currentSpeed < -dt * acceleration * 0.5) {
+    else if (currentSpeed < -dt * acceleration * 0.5)
+    {
         currentSpeed += dt * acceleration * 0.5;
     }
     else {
@@ -95,7 +112,7 @@ void Player::Update(Window* window, GLfloat dt)
 
 glm::mat4 Player::GetModelMatrix()
 {
-    return model;
+    return model * glm::rotate(glm::radians(drift), glm::vec3(0.0f, 1.0f, 0.0f));
 }
 glm::vec3 Player::GetModelPosition()
 {
