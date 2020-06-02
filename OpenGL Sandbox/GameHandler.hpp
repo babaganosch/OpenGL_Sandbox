@@ -3,7 +3,7 @@
 //  OpenGL Sandbox
 //
 //  Created by Lars Andersson on 2020-06-01.
-//  Copyright © 2020 Lars Andersson. All rights reserved.
+//  Copyright ï¿½ 2020 Lars Andersson. All rights reserved.
 //
 
 #ifndef GameHandler_hpp
@@ -25,6 +25,7 @@ public:
 
     void Update(Window* window, PointLight* light, GLfloat dt);
     glm::mat4 GetModelMatrix();
+    Player* GetPlayer() { return &player; }
 
 private:
     Player player;

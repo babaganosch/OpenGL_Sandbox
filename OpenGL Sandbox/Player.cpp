@@ -51,15 +51,20 @@ void Player::Update(Window* window, GLfloat dt)
     if (window->getGPAvailable())
     {
         float hAxis = window->getGPAxes()[GLFW_GAMEPAD_AXIS_LEFT_X];
-        float vAxis = (window->getGPAxes()[4] + 1.f) / 2.0f;
+        float accel = (window->getGPAxes()[4] + 1.f) / 2.0f;
+        float brk = (window->getGPAxes()[3] + 1.f) / 2.0f;
         
         // Horzontal axis
         if (hAxis > 0.1f || hAxis < -0.1f) {
             angle = currentSpeed * rotateSpeed * hAxis;
         }
-        // Vertical axis
-        if (vAxis > 0.1) {
-            currentSpeed -= dt * acceleration * vAxis;
+        // Acceleration
+        if (accel > 0.1) {
+            currentSpeed -= dt * acceleration * accel;
+        }
+        // Break
+        if (brk > 0.1) {
+            currentSpeed += dt * acceleration * brk;
         }
         // Left bumper
         if (window->getGPStates().buttons[GLFW_GAMEPAD_BUTTON_LEFT_BUMPER])

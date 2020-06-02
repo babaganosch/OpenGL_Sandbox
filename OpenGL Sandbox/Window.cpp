@@ -81,7 +81,6 @@ int Window::Initialise()
     glfwSetInputMode(mainWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     
     // Controller setup
-    //glfwSetJoystickCallback(joystickCallback);
     gamepadsPresent = glfwJoystickPresent(GLFW_JOYSTICK_1);
     
     if (gamepadsPresent) {

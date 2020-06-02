@@ -416,7 +416,7 @@ void PostProcessingPass(mat4* projectionMatrix, mat4* viewMatrix, mat4* oldViewP
     {
         renderer.Clear();
         passthroughShader.UseShader();
-        screenQuad.RenderTexture(renderer.GetTexture());
+        screenQuad.RenderTexture( renderer.GetTexture() );
     }
 }
 
@@ -622,6 +622,11 @@ int main() {
             mainWindow.getKeys()[GLFW_KEY_L] = false;
             spotLights[0].Toggle();
         }
+        if (mainWindow.getKeys()[GLFW_KEY_V]) {
+            mainWindow.getKeys()[GLFW_KEY_V] = false;
+            camera.setTarget(gameHandler.GetPlayer());
+        }
+        
         
         /* PrePass for deferred rendering */
         gBuffer.Render(&projection, &viewMatrix);

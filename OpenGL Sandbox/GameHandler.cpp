@@ -42,6 +42,7 @@ void GameHandler::Update(Window* window, PointLight* light, GLfloat dt)
         light->SetPosition(glm::vec3(newX, lightPos.y, newZ));
 
         score++;
+        printf("Score: %d\n", (int)score);
     }
 
 

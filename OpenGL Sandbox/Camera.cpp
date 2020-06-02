@@ -11,6 +11,7 @@
 Camera::Camera()
 {
     Camera(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), -90.0f, 0.0f, 5.0f, 0.5f);
+    followingTarget = false;
 }
 
 Camera::Camera(glm::vec3 startPosition, glm::vec3 startUp, GLfloat startYaw, GLfloat startPitch, GLfloat startMoveSpeed, GLfloat startTurnSpeed)
@@ -23,12 +24,23 @@ Camera::Camera(glm::vec3 startPosition, glm::vec3 startUp, GLfloat startYaw, GLf
     moveSpeed = startMoveSpeed;
     turnSpeed = startTurnSpeed;
     
+    followingTarget = false;
+    
     update();
 }
 
 Camera::~Camera()
 {
     
+}
+
+void Camera::setTarget(Player* pl) {
+    if (followingTarget) {
+        followingTarget = false;
+    } else {
+        followingTarget = true;
+        target = pl;
+    }
 }
 
 void Camera::keyControl(GLfloat dt, bool* keys)
@@ -69,7 +81,13 @@ void Camera::mouseControl(GLfloat xChange, GLfloat yChange)
 
 glm::mat4 Camera::calculateViewMatrix()
 {
-    return glm::lookAt(position, position + front, up);
+    if (followingTarget)
+    {
+        glm::vec3 targetPosition = target->GetModelPosition();
+        return glm::lookAt(position, targetPosition, glm::vec3(0.0f, 1.0f, 0.0f));
+    } else {
+        return glm::lookAt(position, position + front, up);
+    }
 }
 
 glm::vec3 Camera::getCameraPosition()
