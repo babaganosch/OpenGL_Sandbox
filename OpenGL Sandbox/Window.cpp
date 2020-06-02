@@ -18,13 +18,6 @@ Window::Window()
     lastY = 0.0f;
     mouseFirstMoved = true;
     gamepadsPresent = 0;
-    
-    axes = nullptr;
-    
-    for (size_t i = 0; i < 1024; i++)
-    {
-        keys[i] = false;
-    }
 }
 
 Window::Window(GLint windowWidth, GLint windowHeight)
@@ -84,7 +77,6 @@ int Window::Initialise()
     gamepadsPresent = glfwJoystickPresent(GLFW_JOYSTICK_1);
     
     if (gamepadsPresent) {
-        axes = glfwGetJoystickAxes(GLFW_JOYSTICK_1, &count);
         glfwGetGamepadState(GLFW_JOYSTICK_1, &state);
     }
     
@@ -101,6 +93,12 @@ int Window::Initialise()
     glViewport( 0, 0, bufferWidth, bufferHeight );
     
     glfwSetWindowUserPointer(mainWindow, this);
+    
+    // Finally, initialize the keys
+    for (int i = 0; i < 1024; i++)
+    {
+        keys[i] = 0;
+    }
     
     return 0;
 }
@@ -173,7 +171,6 @@ void Window::handleMouse(GLFWwindow* window, double xPos, double yPos)
 void Window::updateGamepad()
 {
     if (gamepadsPresent) {
-        axes = glfwGetJoystickAxes(GLFW_JOYSTICK_1, &count);
         glfwGetGamepadState(GLFW_JOYSTICK_1, &state);
     }
 }

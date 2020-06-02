@@ -50,9 +50,10 @@ void Player::Update(Window* window, GLfloat dt)
     
     if (window->getGPAvailable())
     {
-        float hAxis = window->getGPAxes()[GLFW_GAMEPAD_AXIS_LEFT_X];
-        float accel = (window->getGPAxes()[4] + 1.f) / 2.0f;
-        float brk = (window->getGPAxes()[3] + 1.f) / 2.0f;
+        GLFWgamepadstate states = window->getGPStates();
+        float hAxis = states.axes[GLFW_GAMEPAD_AXIS_LEFT_X];
+        float accel = (states.axes[GLFW_GAMEPAD_AXIS_RIGHT_TRIGGER] + 1.f) / 2.0f;
+        float brk = (states.axes[GLFW_GAMEPAD_AXIS_LEFT_TRIGGER] + 1.f) / 2.0f;
         
         // Horzontal axis
         if (hAxis > 0.1f || hAxis < -0.1f) {
@@ -67,7 +68,7 @@ void Player::Update(Window* window, GLfloat dt)
             currentSpeed += dt * acceleration * brk;
         }
         // Left bumper
-        if (window->getGPStates().buttons[GLFW_GAMEPAD_BUTTON_LEFT_BUMPER])
+        if (states.buttons[GLFW_GAMEPAD_BUTTON_LEFT_BUMPER])
         {
             printf("Skreeeeeeet\n");
         }

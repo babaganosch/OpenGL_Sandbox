@@ -30,7 +30,6 @@ public:
     bool* getKeys() { return keys; }
     
     bool getGPAvailable() { return gamepadsPresent > 0; }
-    const float* getGPAxes() { return axes; }
     GLFWgamepadstate getGPStates() { return state; }
     void updateGamepad();
     
@@ -49,8 +48,7 @@ private:
     bool keys[1024];
     
     // GP Controller
-    int gamepadsPresent, count;
-    const float* axes;
+    int gamepadsPresent;
     GLFWgamepadstate state;
     
     void createCallbacks();
