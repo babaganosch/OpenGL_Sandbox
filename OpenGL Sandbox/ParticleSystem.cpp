@@ -44,12 +44,12 @@ void ParticleSystem::Init(glm::vec3 offset)
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
-void ParticleSystem::RenderParticles(glm::mat4 viewMatrix)
+void ParticleSystem::RenderParticles(glm::mat4* viewMatrix)
 {
     unsigned int active_particles = (unsigned int)particles.size();
     std::vector<glm::vec4> stdData;
     
-    glm::mat4 rotatedMatrix = glm::rotate(viewMatrix, glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+    glm::mat4 rotatedMatrix = glm::rotate(*viewMatrix, glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
     rotatedMatrix = glm::translate(rotatedMatrix, positionOffset);
     
     for (int i = 0; i < active_particles; i++)

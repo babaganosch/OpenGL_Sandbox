@@ -1,10 +1,11 @@
 #define STB_IMAGE_IMPLEMENTATION
 
 #if DEBUG
-#define checkGLError() CheckErrors()
+#define glError() checkGlError(__FILE__,__LINE__)
 #else
-#define checkGLError()
+#define glError()
 #endif
+
 
 #include <iostream>
 #include <string.h>
@@ -36,6 +37,7 @@
 #include "GameHandler.hpp"
 
 #include "Renderer.hpp"
+#include "GBuffer.hpp"
 
 #include "ParticleSystem.hpp"
 #include "Quad.hpp"
@@ -59,8 +61,10 @@ Shader particleShader;
 Shader passthrough;
 Shader motionBlurShader;
 Shader chrAbrShader;
+Shader prePassShader;
 
 Renderer renderer;
+GBuffer gBuffer;
 
 ParticleSystem ps0;
 ParticleSystem ps1;
@@ -94,8 +98,9 @@ unsigned int spotLightCount = 0;
 GLfloat deltaTime = 0.0f;
 GLfloat lastTime = 0.0f;
 GLfloat blackHawkAngle = 0.0f;
+bool finalRenderStage = false;
 
-bool activeOmniShadowPass = true;
+bool activeOmniShadowPass = false;
 bool activeMotionBlur = false;
 bool activeParticles  = true;
 bool showHalfScreenOnly = false;
@@ -104,14 +109,33 @@ vec3 blueLightPos  = vec3(0.0f);
 vec3 scoreLightPos = vec3(-4.0f, 0.0f, 3.0f);
 
 #if DEBUG
-void CheckErrors()
-{
-    GLenum errCode;
-    const GLubyte* errString;
-    while ((errCode = glGetError()) != GL_NO_ERROR)
-    {
-        errString = gluErrorString(errCode);
-        fprintf(stderr, "OpenGL Error: %s\n", errString);
+void checkGlError(const char* file, int line) {
+    GLenum err(glGetError());
+
+    while (err != GL_NO_ERROR) {
+        string error;
+        switch (err) {
+            case GL_INVALID_OPERATION:
+                error = "INVALID_OPERATION";
+                break;
+            case GL_INVALID_ENUM:
+                error = "INVALID_ENUM";
+                break;
+            case GL_INVALID_VALUE:
+                error = "INVALID_VALUE";
+                break;
+            case GL_OUT_OF_MEMORY:
+                error = "OUT_OF_MEMORY";
+                break;
+            case GL_INVALID_FRAMEBUFFER_OPERATION:
+                error = "INVALID_FRAMEBUFFER_OPERATION";
+                break;
+            default:
+                error = "Unknown error";
+                break;
+        }
+        std::cout << file << " " << line << ": GL_" << error << std::endl;
+        err = glGetError();
     }
 }
 #endif
@@ -207,23 +231,27 @@ void CreateShaders()
     particleShader.CreateFromFiles("Shaders/particle.vert", "Shaders/particle.frag");
     
     passthrough = Shader();
-    passthrough.CreateFromFiles("Shaders/QuadRenderer/passthrough.vert", "Shaders/QuadRenderer/simpleTexture.frag");
+    passthrough.CreateFromFiles("Shaders/Passthrough/passthrough.vert", "Shaders/Passthrough/simpleTexture.frag");
     
     motionBlurShader = Shader();
     motionBlurShader.CreateFromFiles("Shaders/MotionBlur/motionBlur.vert", "Shaders/MotionBlur/motionBlur.frag");
     
     chrAbrShader = Shader();
     chrAbrShader.CreateFromFiles("Shaders/CHRABR/passthrough.vert", "Shaders/CHRABR/chromatic_aberration.frag");
+    
+    prePassShader = Shader();
+    prePassShader.CreateFromFiles("Shaders/DeferredRendering/prePass.vert", "Shaders/DeferredRendering/prePass.frag");
 }
 
 void RenderScene()
 {
+    
     // TRI1
     mat4 model(1.0f);
     model = translate(model, vec3(0.0f, 0.0f, -2.5f));
     glUniformMatrix4fv(uniformModel, 1, GL_FALSE, value_ptr(model));
     brickTexture.UseTexture();
-    shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
+    if (finalRenderStage) shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
     meshList[0]->RenderMesh();
     
     // TRI2
@@ -231,15 +259,15 @@ void RenderScene()
     model = translate(model, vec3(0.0f, 4.0f, -2.5f));
     glUniformMatrix4fv(uniformModel, 1, GL_FALSE, value_ptr(model));
     dirtTexture.UseTexture();
-    dullMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
+    if (finalRenderStage) dullMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
     meshList[1]->RenderMesh();
-
+    
     // FLOOR
     model = mat4(1.0f);
     model = translate(model, vec3(0.0f, -2.0f, 0.0f));
     glUniformMatrix4fv(uniformModel, 1, GL_FALSE, value_ptr(model));
     dirtTexture.UseTexture();
-    dullMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
+    if (finalRenderStage) dullMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
     meshList[2]->RenderMesh();
 
     // XWING
@@ -247,7 +275,7 @@ void RenderScene()
     model = translate(model, vec3(-7.0f, 0.0f, 10.0f));
     model = scale(model, vec3(0.006f, 0.006f, 0.006f));
     glUniformMatrix4fv(uniformModel, 1, GL_FALSE, value_ptr(model));
-    shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
+    if (finalRenderStage) shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
     xwing.RenderModel();
 
     // BLACKHAWK
@@ -258,13 +286,13 @@ void RenderScene()
     model = rotate(model, -15.0f * toRadians, vec3(0.0f, 0.0f, 1.0f));
     model = rotate(model, -90.0f * toRadians, vec3(1.0f, 0.0f, 0.0f));
     glUniformMatrix4fv(uniformModel, 1, GL_FALSE, value_ptr(model));
-    shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
+    if (finalRenderStage) shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
     blackHawk.RenderModel();
     
     // DELOREAN
     model = gameHandler.GetModelMatrix();
     glUniformMatrix4fv(uniformModel, 1, GL_FALSE, value_ptr(model));
-    shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
+    if (finalRenderStage) shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
     deLorean.RenderModel();
     
     // BALL1
@@ -272,7 +300,7 @@ void RenderScene()
     model = translate(model, vec3(-3.0f, -1.7f, 0.0f));
     model = scale(model, vec3(0.005f, 0.005f, 0.005f));
     glUniformMatrix4fv(uniformModel, 1, GL_FALSE, value_ptr(model));
-    shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
+    if (finalRenderStage) shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
     ball.RenderModel();
     
     // BALL2
@@ -280,7 +308,7 @@ void RenderScene()
     model = translate(model, vec3(-3.0f, -1.7f, 1.25f));
     model = scale(model, vec3(0.005f, 0.005f, 0.005f));
     glUniformMatrix4fv(uniformModel, 1, GL_FALSE, value_ptr(model));
-    dullMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
+    if (finalRenderStage) dullMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
     ball.RenderModel();
     
     // LIGHTBALL 1 (BLUE)
@@ -288,7 +316,7 @@ void RenderScene()
     model = translate(model, blueLightPos);
     model = scale(model, vec3(0.002f, 0.002f, 0.002f));
     glUniformMatrix4fv(uniformModel, 1, GL_FALSE, value_ptr(model));
-    shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
+    if (finalRenderStage) shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
     ball.RenderModel();
     
     // LIGHTBALL 2 (SCORE)
@@ -296,7 +324,7 @@ void RenderScene()
     model = translate(model, pointLights[1].GetPosition());
     model = scale(model, vec3(0.002f, 0.002f, 0.002f));
     glUniformMatrix4fv(uniformModel, 1, GL_FALSE, value_ptr(model));
-    shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
+    if (finalRenderStage) shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
     ball.RenderModel();
     
 }
@@ -311,8 +339,6 @@ void DirectionalShadowMapPass(DirectionalLight* light)
     
     glClear(GL_DEPTH_BUFFER_BIT);
     
-    uniformSpecularIntensity = directionalShadowShader.GetSpecularIntensityLocation();
-    uniformShininess = directionalShadowShader.GetShininessLocation();
     uniformModel = directionalShadowShader.GetModelLocation();
     mat4 matrix = light->CalculateLightTransform();
     directionalShadowShader.SetDirectionalLightTransform(&matrix);
@@ -328,8 +354,6 @@ void OmniShadowMapPass(PointLight* light)
     light->GetShadowMap()->Write();
     glClear(GL_DEPTH_BUFFER_BIT);
     
-    uniformSpecularIntensity = directionalShadowShader.GetSpecularIntensityLocation();
-    uniformShininess = directionalShadowShader.GetShininessLocation();
     uniformModel = omniShadowShader.GetModelLocation();
     uniformOmniLightPos = omniShadowShader.GetOmniLightPosLocation();
     uniformFarPlane = omniShadowShader.GetFarPlaneLocation();
@@ -341,11 +365,10 @@ void OmniShadowMapPass(PointLight* light)
     
     RenderScene();
     
-    //glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
-void ParticleRenderingPass(mat4 projectionMatrix, mat4 viewMatrix)
+void ParticleRenderingPass(mat4* projectionMatrix, mat4* viewMatrix)
 {
     ps0.ProcessParticles(deltaTime);
     ps1.ProcessParticles(deltaTime);
@@ -354,14 +377,14 @@ void ParticleRenderingPass(mat4 projectionMatrix, mat4 viewMatrix)
     particleShader.UseShader();
     particleTexture.UseTexture();
     glUniform1i(particleShader.GetTheTextureLocation(), 1);
-    glUniformMatrix4fv(particleShader.GetProjectionLocation(), 1, GL_FALSE, value_ptr(projectionMatrix));
+    glUniformMatrix4fv(particleShader.GetProjectionLocation(), 1, GL_FALSE, value_ptr(*projectionMatrix));
     ps0.RenderParticles(viewMatrix);
     ps1.RenderParticles(viewMatrix);
     ps2.RenderParticles(viewMatrix);
     ps3.RenderParticles(viewMatrix);
 }
 
-void PostProcessingPass(mat4 projectionMatrix, mat4 viewMatrix, mat4* oldViewProjectionMatrix)
+void PostProcessingPass(mat4* projectionMatrix, mat4* viewMatrix, mat4* oldViewProjectionMatrix)
 {
     renderer.Reset();
     
@@ -375,12 +398,13 @@ void PostProcessingPass(mat4 projectionMatrix, mat4 viewMatrix, mat4* oldViewPro
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, renderer.GetTexture());
         glActiveTexture(GL_TEXTURE1);
-        glBindTexture(GL_TEXTURE_2D, renderer.GetDepthTexture());
+        glBindTexture(GL_TEXTURE_2D, gBuffer.GetDepthTexture());
         glUniform1i(motionBlurShader.GetShowHalfScreenOnlyLocation(), showHalfScreenOnly);
         
-        *oldViewProjectionMatrix = projectionMatrix * viewMatrix;
+        mat4 viewProj = *projectionMatrix * *viewMatrix;
+        *oldViewProjectionMatrix = viewProj;
         
-        glUniformMatrix4fv(motionBlurShader.GetViewProjectionInverseMatrix(), 1, GL_FALSE, value_ptr(inverse(projectionMatrix * viewMatrix)));
+        glUniformMatrix4fv(motionBlurShader.GetViewProjectionInverseMatrix(), 1, GL_FALSE, value_ptr(inverse(viewProj)));
         
         screenQuad.RenderTexture(renderer.GetTexture());
         
@@ -396,7 +420,7 @@ void PostProcessingPass(mat4 projectionMatrix, mat4 viewMatrix, mat4* oldViewPro
     }
 }
 
-void RenderPass(mat4 projectionMatrix, mat4 viewMatrix)
+void RenderPass(mat4* projectionMatrix, mat4* viewMatrix)
 {
     
     shaderList[0].UseShader();
@@ -416,8 +440,8 @@ void RenderPass(mat4 projectionMatrix, mat4 viewMatrix)
     glEnable(GL_DEPTH_TEST);
     
     vec3 cameraPos = camera.getCameraPosition();
-    glUniformMatrix4fv(uniformProjection, 1, GL_FALSE, value_ptr(projectionMatrix));
-    glUniformMatrix4fv(uniformView, 1, GL_FALSE, value_ptr(viewMatrix));
+    glUniformMatrix4fv(uniformProjection, 1, GL_FALSE, value_ptr(*projectionMatrix));
+    glUniformMatrix4fv(uniformView, 1, GL_FALSE, value_ptr(*viewMatrix));
     glUniform3f(uniformEyePosition, cameraPos.x, cameraPos.y, cameraPos.z);
     mat4 matrix = mainLight.CalculateLightTransform();
     
@@ -435,7 +459,9 @@ void RenderPass(mat4 projectionMatrix, mat4 viewMatrix)
     handPosition.y -= 0.3f;
     spotLights[0].SetFlash(handPosition, camera.getCameraDirection());
     
+    finalRenderStage = true;
     RenderScene();
+    finalRenderStage = false;
 }
 
 int main() {
@@ -443,13 +469,16 @@ int main() {
     mainWindow = Window(1366, 768);    // 1920x1080, 1366x768
     mainWindow.Initialise();
     
-    renderer = Renderer();
-    renderer.Init(mainWindow.getBufferWidth(), mainWindow.getBufferHeight());
+    gameHandler = GameHandler();
     
     CreateObjects();
     CreateShaders();
-
-    gameHandler = GameHandler();
+    
+    renderer = Renderer();
+    renderer.Init(mainWindow.getBufferWidth(), mainWindow.getBufferHeight());
+    
+    gBuffer = GBuffer();
+    gBuffer.Init(mainWindow.getBufferWidth(), mainWindow.getBufferHeight(), &prePassShader);
     
     ps0 = ParticleSystem(1000);
     ps0.Init(vec3(1.3f, 0.25f, 1.8f));
@@ -552,7 +581,7 @@ int main() {
     while ( !mainWindow.getShouldClose() )
     {
         // Check errors
-        checkGLError();
+        glError();
         
         // Timing
         GLfloat now = glfwGetTime();
@@ -592,6 +621,12 @@ int main() {
             mainWindow.getKeys()[GLFW_KEY_L] = false;
             spotLights[0].Toggle();
         }
+        
+        /* PrePass for deferred rendering */
+        gBuffer.Render(&projection, &viewMatrix);
+        uniformModel = prePassShader.GetModelLocation();
+        RenderScene();
+        gBuffer.Reset();
             
         /* Directional ShadowMap Pass */
         DirectionalShadowMapPass(&mainLight);
@@ -610,26 +645,13 @@ int main() {
         
         /* Regular render pass */
         renderer.RenderToTexture();
-        RenderPass(projection, viewMatrix);
+        RenderPass(&projection, &viewMatrix);
         
         /* Particles */
-        if (activeParticles) ParticleRenderingPass(projection, viewMatrix);
+        if (activeParticles) ParticleRenderingPass(&projection, &viewMatrix);
         
         /* Post FX */
-        PostProcessingPass(projection, viewMatrix, &oldViewProjectionMatrix);
-        
-        
-        /*
-        renderer.Reset();
-        passthrough.UseShader();
-        screenQuad.RenderTexture(  pointLights[0].GetShadowMap()->GetTexture()  );
-        */
-        
-        /*glClearColor( 0.0f, 0.0f, 0.0f, 1.0f );
-        glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
-        glEnable(GL_DEPTH_TEST);
-        chrAbrShader.UseShader();
-        screenQuad.RenderTexture(renderer.GetTexture());*/
+        PostProcessingPass(&projection, &viewMatrix, &oldViewProjectionMatrix);
         
         glUseProgram(0);
         // Swap buffers

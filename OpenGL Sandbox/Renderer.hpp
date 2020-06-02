@@ -24,14 +24,12 @@ public:
     void Clear();
     
     GLuint GetTexture() { return colorTexture; }
-    GLuint GetDepthTexture() { return depthTexture; }
     
 private:
     GLuint FBO, RBO;
-    GLuint colorTexture, depthTexture;
+    GLuint colorTexture;
     int width;
     int height;
-    int bitDepth;
 };
 
 #endif /* Renderer_hpp */

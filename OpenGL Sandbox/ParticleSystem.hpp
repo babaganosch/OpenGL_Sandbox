@@ -30,7 +30,7 @@ public:
     void Kill(int id);
     void Spawn(Particle particle);
     void ProcessParticles(float dt);
-    void RenderParticles(glm::mat4 viewMatrix);
+    void RenderParticles(glm::mat4* viewMatrix);
     
 private:
     GLuint VAO, VBO;
