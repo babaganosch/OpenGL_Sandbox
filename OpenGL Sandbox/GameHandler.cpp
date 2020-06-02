@@ -25,14 +25,16 @@ void GameHandler::Update(Window* window, PointLight* light, GLfloat dt)
 	player.Update(window, dt);
 
     glm::vec3 lightPos = light->GetPosition();
-    glm::vec3 playerPos =  player.GetModelPosition();
+    glm::vec3 playerPos = player.GetModelPosition();
 
     if (playerPos.x < lightPos.x + 1 && playerPos.x > lightPos.x - 1 && playerPos.z > lightPos.z - 1 && playerPos.z < lightPos.z + 1)
     {
         GLfloat newRed = CommonHelper::uniform_randf(0.0f, 1.0f);
         GLfloat newGreen = CommonHelper::uniform_randf(0.0f, 1.0f);
         GLfloat newBlue = CommonHelper::uniform_randf(0.0f, 1.0f);
-        light->SetColour(glm::vec3(newRed, newGreen, newBlue));
+        glm::vec3 newColour = glm::normalize(glm::vec3(newRed, newGreen, newBlue));
+        light->SetColour(newColour);
+        
 
         GLfloat newX = CommonHelper::uniform_randf(-20.0f, 20.0f);
         GLfloat newZ = CommonHelper::uniform_randf(-20.0f, 20.0f);

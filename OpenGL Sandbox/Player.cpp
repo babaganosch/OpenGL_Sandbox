@@ -18,7 +18,7 @@ Player::Player()
     acceleration = 15.f;
 
     glm::mat4 R = glm::rotate(glm::radians(angle), glm::vec3(0.0f, 1.0f, 0.0f));
-    glm::mat4 T = R  * glm::translate(glm::vec3(3.0f, -2.0f, 4.0f)) * glm::scale(glm::vec3(0.005f, 0.005f, 0.005f));
+    glm::mat4 T = R * glm::translate(glm::vec3(3.0f, -2.0f, 4.0f)) * glm::scale(glm::vec3(0.005f, 0.005f, 0.005f));
 
     model *= T;
 }
@@ -30,6 +30,7 @@ Player::~Player()
 
 void Player::Update(Window* window, GLfloat dt)
 {
+    
     if (window->getKeys()[GLFW_KEY_UP])
     {
         currentSpeed -= dt * acceleration;
@@ -45,6 +46,26 @@ void Player::Update(Window* window, GLfloat dt)
     if (window->getKeys()[GLFW_KEY_LEFT])
     {
         angle = - currentSpeed * rotateSpeed;
+    }
+    
+    if (window->getGPAvailable())
+    {
+        float hAxis = window->getGPAxes()[GLFW_GAMEPAD_AXIS_LEFT_X];
+        float vAxis = (window->getGPAxes()[4] + 1.f) / 2.0f;
+        
+        // Horzontal axis
+        if (hAxis > 0.1f || hAxis < -0.1f) {
+            angle = currentSpeed * rotateSpeed * hAxis;
+        }
+        // Vertical axis
+        if (vAxis > 0.1) {
+            currentSpeed -= dt * acceleration * vAxis;
+        }
+        // Left bumper
+        if (window->getGPStates().buttons[GLFW_GAMEPAD_BUTTON_LEFT_BUMPER])
+        {
+            printf("Skreeeeeeet\n");
+        }
     }
    
     currentSpeed = glm::clamp(currentSpeed, -maxSpeed, maxSpeed);

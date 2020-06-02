@@ -58,7 +58,7 @@ vector<Shader> shaderList;
 Shader directionalShadowShader;
 Shader omniShadowShader;
 Shader particleShader;
-Shader passthrough;
+Shader passthroughShader;
 Shader motionBlurShader;
 Shader chrAbrShader;
 Shader prePassShader;
@@ -230,8 +230,8 @@ void CreateShaders()
     particleShader = Shader();
     particleShader.CreateFromFiles("Shaders/particle.vert", "Shaders/particle.frag");
     
-    passthrough = Shader();
-    passthrough.CreateFromFiles("Shaders/Passthrough/passthrough.vert", "Shaders/Passthrough/simpleTexture.frag");
+    passthroughShader = Shader();
+    passthroughShader.CreateFromFiles("Shaders/Passthrough/passthrough.vert", "Shaders/Passthrough/simpleTexture.frag");
     
     motionBlurShader = Shader();
     motionBlurShader.CreateFromFiles("Shaders/MotionBlur/motionBlur.vert", "Shaders/MotionBlur/motionBlur.frag");
@@ -394,10 +394,10 @@ void PostProcessingPass(mat4* projectionMatrix, mat4* viewMatrix, mat4* oldViewP
         motionBlurShader.UseShader();
         renderer.Clear();
         
-        motionBlurShader.SetMotionBlurTextures(0, 1);
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, renderer.GetTexture());
+        motionBlurShader.SetMotionBlurTextures(1, 2);
         glActiveTexture(GL_TEXTURE1);
+        glBindTexture(GL_TEXTURE_2D, renderer.GetTexture());
+        glActiveTexture(GL_TEXTURE2);
         glBindTexture(GL_TEXTURE_2D, gBuffer.GetDepthTexture());
         glUniform1i(motionBlurShader.GetShowHalfScreenOnlyLocation(), showHalfScreenOnly);
         
@@ -415,7 +415,7 @@ void PostProcessingPass(mat4* projectionMatrix, mat4* viewMatrix, mat4* oldViewP
     else
     {
         renderer.Clear();
-        passthrough.UseShader();
+        passthroughShader.UseShader();
         screenQuad.RenderTexture(renderer.GetTexture());
     }
 }
@@ -598,6 +598,7 @@ int main() {
         
         // Input
         glfwPollEvents( );
+        mainWindow.updateGamepad();
         camera.keyControl(deltaTime, mainWindow.getKeys());
         camera.mouseControl(mainWindow.getXChange(), mainWindow.getYChange());
         viewMatrix = camera.calculateViewMatrix();

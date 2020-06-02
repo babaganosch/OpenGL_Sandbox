@@ -238,8 +238,8 @@ void main()
     //finalColour += CalcSpotLights();
     colour = texture(theTexture, TexCoord) * finalColour;
      
-    /*
-    vec2 mapCoord = 2.0 * TexCoord - 1.0;
-    colour = texture(omniShadowMaps[0].shadowMap, vec3(1.0, mapCoord.xy));
-     */
+    
+    //vec2 mapCoord = 2.0 * TexCoord - 1.0;
+    //colour = texture(omniShadowMaps[1].shadowMap, vec3(1.0, mapCoord.xy));
+     
 }

@@ -17,6 +17,9 @@ Window::Window()
     lastX = 0.0f;
     lastY = 0.0f;
     mouseFirstMoved = true;
+    gamepadsPresent = 0;
+    
+    axes = nullptr;
     
     for (size_t i = 0; i < 1024; i++)
     {
@@ -30,6 +33,25 @@ Window::Window(GLint windowWidth, GLint windowHeight)
     width  = windowWidth;
     height = windowHeight;
 }
+/*
+void Window::joystickCallback(int jid, int event)
+{
+    if (event == GLFW_CONNECTED)
+    {
+        gamepadsPresent = glfwJoystickPresent(GLFW_JOYSTICK_1);
+        
+        if (gamepadsPresent) {
+            axes = glfwGetJoystickAxes(GLFW_JOYSTICK_1, &count);
+            buttons = glfwGetJoystickButtons(GLFW_JOYSTICK_1, &count);
+        }
+    }
+    else if (event == GLFW_DISCONNECTED)
+    {
+        gamepadsPresent = 0;
+        axes = nullptr;
+        buttons = nullptr;
+    }
+}*/
 
 int Window::Initialise()
 {
@@ -57,6 +79,15 @@ int Window::Initialise()
     // Handle key + mouse inputs
     createCallbacks();
     glfwSetInputMode(mainWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    
+    // Controller setup
+    //glfwSetJoystickCallback(joystickCallback);
+    gamepadsPresent = glfwJoystickPresent(GLFW_JOYSTICK_1);
+    
+    if (gamepadsPresent) {
+        axes = glfwGetJoystickAxes(GLFW_JOYSTICK_1, &count);
+        glfwGetGamepadState(GLFW_JOYSTICK_1, &state);
+    }
     
     if ( glewInit( ) != GLEW_OK )
     {
@@ -138,6 +169,14 @@ void Window::handleMouse(GLFWwindow* window, double xPos, double yPos)
     theWindow->yChange = theWindow->lastY - yPos; // This way to not have inverted controlls
     theWindow->lastX = xPos;
     theWindow->lastY = yPos;
+}
+
+void Window::updateGamepad()
+{
+    if (gamepadsPresent) {
+        axes = glfwGetJoystickAxes(GLFW_JOYSTICK_1, &count);
+        glfwGetGamepadState(GLFW_JOYSTICK_1, &state);
+    }
 }
 
 Window::~Window()
