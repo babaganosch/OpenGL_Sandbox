@@ -62,6 +62,7 @@ Shader passthroughShader;
 Shader motionBlurShader;
 Shader chrAbrShader;
 Shader prePassShader;
+Shader ssaoShader;
 
 Renderer renderer;
 GBuffer gBuffer;
@@ -102,7 +103,7 @@ bool finalRenderStage = false;
 
 bool activeOmniShadowPass = false;
 bool activeMotionBlur = false;
-bool activeParticles  = true;
+bool activeParticles  = false;
 bool showHalfScreenOnly = false;
 
 vec3 blueLightPos  = vec3(0.0f);
@@ -241,6 +242,9 @@ void CreateShaders()
     
     prePassShader = Shader();
     prePassShader.CreateFromFiles("Shaders/DeferredRendering/prePass.vert", "Shaders/DeferredRendering/prePass.frag");
+    
+    ssaoShader = Shader();
+    ssaoShader.CreateFromFiles("Shaders/SSAO/SSAOshader.vert", "Shaders/SSAO/SSAOshader.frag");
 }
 
 void RenderScene()
@@ -384,7 +388,7 @@ void ParticleRenderingPass(mat4* projectionMatrix, mat4* viewMatrix)
     ps3.RenderParticles(viewMatrix);
 }
 
-void PostProcessingPass(mat4* projectionMatrix, mat4* viewMatrix, mat4* oldViewProjectionMatrix)
+void PostProcessingPass(mat4* projectionView, mat4* oldViewProjectionMatrix)
 {
     renderer.Reset();
     
@@ -401,7 +405,11 @@ void PostProcessingPass(mat4* projectionMatrix, mat4* viewMatrix, mat4* oldViewP
         glBindTexture(GL_TEXTURE_2D, gBuffer.GetDepthTexture());
         glUniform1i(motionBlurShader.GetShowHalfScreenOnlyLocation(), showHalfScreenOnly);
         
-        mat4 viewProj = *projectionMatrix * *viewMatrix;
+        glUniform1i(motionBlurShader.GetSSAOtextureLocation(), 3);
+        glActiveTexture(GL_TEXTURE3);
+        glBindTexture(GL_TEXTURE_2D, renderer.GetSSAOTexture());
+        
+        mat4 viewProj = *projectionView;
         *oldViewProjectionMatrix = viewProj;
         
         glUniformMatrix4fv(motionBlurShader.GetViewProjectionInverseMatrix(), 1, GL_FALSE, value_ptr(inverse(viewProj)));
@@ -451,8 +459,8 @@ void RenderPass(mat4* projectionMatrix, mat4* viewMatrix)
     shaderList[0].SetTexture(1);
     shaderList[0].SetDirectionalShadowMap(2);
     
-    shaderList[0].SetPointLights(pointLights, pointLightCount, 3, 0);
-    shaderList[0].SetSpotLights(spotLights, spotLightCount, 3 + pointLightCount, pointLightCount);
+    shaderList[0].SetPointLights(pointLights, pointLightCount, 6, 0);
+    shaderList[0].SetSpotLights(spotLights, spotLightCount, 6 + pointLightCount, pointLightCount);
     
     // Let one spotlight follow the camera
     glm::vec3 handPosition = cameraPos;
@@ -578,6 +586,19 @@ int main() {
     glUniformMatrix4fv(motionBlurShader.GetPreviousViewProjectionMatrix(), 1, GL_FALSE, value_ptr(oldViewProjectionMatrix));
     glUseProgram(0);
     
+    ssaoShader.UseShader();
+    glUniform1i(ssaoShader.GetPositionTextureLocation(), 1);
+    glUniform1i(ssaoShader.GetNormalTextureLocation(), 2);
+    glUniform1i(ssaoShader.GetNoiseTextureLocation(), 3);
+    glUniform1f(ssaoShader.GetScreenWidthLocation(), mainWindow.getBufferWidth());
+    glUniform1f(ssaoShader.GetScreenHeightLocation(), mainWindow.getBufferHeight());
+    glUseProgram(0);
+    
+    GLuint uniformCameraPosSSAO = ssaoShader.GetCameraPositionLocation();
+    GLuint uniformCameraDirSSAO = ssaoShader.GetCameraDirectionLocation();
+    GLuint uniformViewProjSSAO = ssaoShader.GetViewProjectionLocation();
+    GLuint uniformSamplesSSAO = ssaoShader.GetSSAOsamplesLocation();
+    
     while ( !mainWindow.getShouldClose() )
     {
         // Check errors
@@ -602,6 +623,10 @@ int main() {
         camera.keyControl(deltaTime, mainWindow.getKeys());
         camera.mouseControl(mainWindow.getXChange(), mainWindow.getYChange());
         viewMatrix = camera.calculateViewMatrix();
+        mat4 projectionView = projection * viewMatrix;
+        vec3 cameraPos = camera.getCameraPosition();
+        vec3 cameraDir = camera.getCameraDirection();
+        
         if (mainWindow.getKeys()[GLFW_KEY_P]) {
             mainWindow.getKeys()[GLFW_KEY_P] = false;
             activeParticles = !activeParticles;
@@ -633,6 +658,17 @@ int main() {
         uniformModel = prePassShader.GetModelLocation();
         RenderScene();
         gBuffer.Reset();
+        
+        /* SSAO pass */
+        renderer.RenderSSAO(gBuffer.GetPositionTexture(), gBuffer.GetNormalsTexture());
+        ssaoShader.UseShader();
+        glUniform3f(uniformCameraPosSSAO, cameraPos.x, cameraPos.y, cameraPos.z);
+        glUniform3f(uniformCameraDirSSAO, cameraDir.x, cameraDir.y, cameraDir.z);
+        glUniformMatrix4fv(uniformViewProjSSAO, 1, GL_FALSE, value_ptr(projectionView));
+        glUniform3fv(uniformSamplesSSAO, hemisphereSamples, value_ptr(*renderer.GetSSAOsamples()));
+        screenQuad.RenderQuad();
+        renderer.Reset();
+        glUseProgram(0);
             
         /* Directional ShadowMap Pass */
         DirectionalShadowMapPass(&mainLight);
@@ -657,7 +693,7 @@ int main() {
         if (activeParticles) ParticleRenderingPass(&projection, &viewMatrix);
         
         /* Post FX */
-        PostProcessingPass(&projection, &viewMatrix, &oldViewProjectionMatrix);
+        PostProcessingPass(&projectionView, &oldViewProjectionMatrix);
         
         glUseProgram(0);
         // Swap buffers

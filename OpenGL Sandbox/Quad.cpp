@@ -69,3 +69,12 @@ void Quad::RenderTexture( GLuint texture )
     glEnable( GL_DEPTH_TEST );
     glBindVertexArray(0);
 }
+
+void Quad::RenderQuad()
+{
+    glBindVertexArray( VAO );
+    glDisable( GL_DEPTH_TEST );
+    glDrawArrays( GL_TRIANGLES, 0, 6 );
+    glEnable( GL_DEPTH_TEST );
+    glBindVertexArray(0);
+}

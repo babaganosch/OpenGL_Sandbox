@@ -8,6 +8,7 @@ uniform mat4 g_ViewProjectionInverseMatrix;
 uniform bool showHalfScreenOnly = false;
 uniform sampler2D renderedTexture;
 uniform sampler2D depthTexture;
+uniform sampler2D ssaoTexture;
 
 float numSamples = 5.0f;
 float velocityDivider = 4.f;
@@ -15,7 +16,7 @@ void main()
 {
     if (showHalfScreenOnly && TexCoords.x > 0.5f)
     {
-        outColour = texture(renderedTexture, TexCoords);
+        outColour = texture(renderedTexture, TexCoords) * texture(ssaoTexture, TexCoords).r;
         return;
     }
     

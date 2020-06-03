@@ -21,6 +21,7 @@ public:
     void Init();
     void RenderTexture( GLuint texture );
     void RenderFB();
+    void RenderQuad();
     
 private:
     GLuint VAO, VBO;

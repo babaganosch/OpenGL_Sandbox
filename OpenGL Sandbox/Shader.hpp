@@ -56,6 +56,17 @@ public:
     GLuint GetPreviousViewProjectionMatrix() { return uniformPreviousViewProjectionMatrix; }
     GLuint GetShowHalfScreenOnlyLocation() { return uniformShowHalfScreenOnly; }
     
+    GLuint GetPositionTextureLocation() { return uniformPositionTexture; }
+    GLuint GetNormalTextureLocation() { return uniformNormalTexture; }
+    GLuint GetNoiseTextureLocation() { return uniformNoiseTexture; }
+    GLuint GetSSAOsamplesLocation() { return uniformSSAOsamples; }
+    GLuint GetScreenWidthLocation() { return uniformScreenWidth; }
+    GLuint GetScreenHeightLocation() { return uniformScreenHeight; }
+    GLuint GetCameraPositionLocation() { return uniformCameraPosition; }
+    GLuint GetCameraDirectionLocation() { return uniformCameraDirection; }
+    GLuint GetViewProjectionLocation() { return uniformViewProjection; }
+    GLuint GetSSAOtextureLocation() { return uniformSSAOtexture; }
+    
     void SetDirectionalLight(DirectionalLight* dLight);
     void SetPointLights(PointLight* pLight, unsigned int lightCount, unsigned int textureUnit, unsigned int offset);
     void SetSpotLights(SpotLight* sLight, unsigned int lightCount, unsigned int textureUnit, unsigned int offset);
@@ -84,8 +95,15 @@ private:
     
     GLuint uniformShowHalfScreenOnly;
     
+    // Motion blur
     GLuint uniformViewProjectionInverseMatrix, uniformPreviousViewProjectionMatrix;
     GLuint uniformMotionBlurTexture0, uniformMotionBlurTexture1;
+    
+    // SSAO
+    GLuint uniformPositionTexture, uniformNormalTexture, uniformNoiseTexture;
+    GLuint uniformSSAOsamples, uniformScreenWidth, uniformScreenHeight;
+    GLuint uniformViewProjection, uniformCameraPosition, uniformCameraDirection;
+    GLuint uniformSSAOtexture;
     
     struct {
         GLuint uniformColour;

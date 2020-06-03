@@ -9,6 +9,7 @@ uniform sampler2D renderedTexture;
 
 void main()
 {
+    
     color = texture( renderedTexture, TexCoords);
     
     /*

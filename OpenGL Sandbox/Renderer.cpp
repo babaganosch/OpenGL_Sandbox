@@ -12,7 +12,10 @@ Renderer::Renderer()
 {
     FBO = 0;
     RBO = 0;
+    ssaoFBO = 0;
     colorTexture = 0;
+    noiseTexture = 0;
+    ssaoTexture = 0;
     
     width = 0;
     height = 0;
@@ -66,6 +69,61 @@ void Renderer::Init(unsigned int w, unsigned int h)
     
         
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    
+    //
+    // ScreenSpace Ambient Occlusion
+    //
+    // Kernel
+    for (int i = 0; i < hemisphereSamples; i++) {
+        glm::vec3 tmp = CommonHelper::cosineSampleHemisphere();
+        tmp = tmp * CommonHelper::randf();
+
+        //accelerating interpolation function (fewer samples away from origin)
+        samples[i] = tmp;
+        float scale = float(i) / float(hemisphereSamples);
+        scale = glm::mix(0.1f, 1.0f, scale * scale);
+    }
+    
+    // Noise texture
+    std::vector<glm::vec3> ssaoNoise;
+    for (unsigned int i = 0; i < 16; i++)
+    {
+        glm::vec3 noise(
+            CommonHelper::randf() * 2.0 - 1.0,
+            CommonHelper::randf() * 2.0 - 1.0,
+            0.0f);
+        ssaoNoise.push_back(noise);
+    }
+    glGenTextures(1, &noiseTexture);
+    glBindTexture(GL_TEXTURE_2D, noiseTexture);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, 4, 4, 0, GL_RGB, GL_FLOAT, &ssaoNoise[0]);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glBindTexture(GL_TEXTURE_2D, 0);
+    
+    glGenFramebuffers(1, &ssaoFBO);
+    glBindFramebuffer(GL_FRAMEBUFFER, ssaoFBO);
+        
+        glGenTextures(1, &ssaoTexture);
+        glBindTexture(GL_TEXTURE_2D, ssaoTexture);
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, width, height, 0, GL_RED, GL_FLOAT, nullptr);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+              
+            glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, ssaoTexture, 0);
+    
+            status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
+            if (status != GL_FRAMEBUFFER_COMPLETE)
+            {
+                printf("Framebuffer Error: %i\n", status);
+                glBindFramebuffer(GL_FRAMEBUFFER, 0);
+                glBindTexture(GL_TEXTURE_2D, 0);
+                return;
+            }
+        glBindTexture(GL_TEXTURE_2D, 0);
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 void Renderer::RenderToTexture()
@@ -73,6 +131,20 @@ void Renderer::RenderToTexture()
     glBindFramebuffer(GL_FRAMEBUFFER, FBO);
     glViewport(0, 0, width, height);
     Clear();
+}
+
+void Renderer::RenderSSAO(GLuint positionTexture, GLuint normalTexture)
+{
+    glBindFramebuffer(GL_FRAMEBUFFER, ssaoFBO);
+    glViewport(0, 0, width, height);
+    glClear( GL_COLOR_BUFFER_BIT );
+    
+    glActiveTexture(GL_TEXTURE1);
+    glBindTexture(GL_TEXTURE_2D, positionTexture);
+    glActiveTexture(GL_TEXTURE2);
+    glBindTexture(GL_TEXTURE_2D, normalTexture);
+    glActiveTexture(GL_TEXTURE3);
+    glBindTexture(GL_TEXTURE_2D, noiseTexture);
 }
 
 void Renderer::Reset()

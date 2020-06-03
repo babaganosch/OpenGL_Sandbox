@@ -266,8 +266,8 @@
 		46E79C5C2486E68B004B1C91 /* SSAO */ = {
 			isa = PBXGroup;
 			children = (
-				46E79C5E2486E6A2004B1C91 /* SSAOshader.frag */,
 				46E79C5D2486E6A2004B1C91 /* SSAOshader.vert */,
+				46E79C5E2486E6A2004B1C91 /* SSAOshader.frag */,
 			);
 			name = SSAO;
 			sourceTree = "<group>";

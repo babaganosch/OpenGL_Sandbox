@@ -398,6 +398,19 @@ void Shader::CompileProgram()
         snprintf(locBuff, sizeof(locBuff), "omniShadowMaps[%d].farPlane", i);
         uniformOmniShadowMap[i].uniformFarPlane = glGetUniformLocation(shaderID, locBuff);
     }
+    
+    /* SSAO */
+    uniformPositionTexture = glGetUniformLocation(shaderID, "positionTexture");
+    uniformNormalTexture = glGetUniformLocation(shaderID, "normalTexture");
+    uniformNoiseTexture = glGetUniformLocation(shaderID, "noiseTexture");
+    uniformSSAOsamples = glGetUniformLocation(shaderID, "samples");
+    uniformScreenWidth = glGetUniformLocation(shaderID, "s_width");
+    uniformScreenHeight = glGetUniformLocation(shaderID, "s_height");
+    uniformCameraPosition = glGetUniformLocation(shaderID, "cameraPosition");
+    uniformCameraDirection = glGetUniformLocation(shaderID, "cameraDirection");
+    uniformViewProjection = glGetUniformLocation(shaderID, "projectionView");
+    
+    uniformSSAOtexture = glGetUniformLocation(shaderID, "ssaoTexture");
 }
 
 void Shader::Validate()
