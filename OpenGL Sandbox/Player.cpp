@@ -57,7 +57,24 @@ void Player::Update(Window* window, GLfloat dt)
         
         // Horzontal axis
         if (hAxis > 0.1f || hAxis < -0.1f) {
-            angle = currentSpeed * rotateSpeed * hAxis;
+            if (abs(drift) > 1)
+            {
+                angle = CommonHelper::lerp(angle, currentSpeed * rotateSpeed * hAxis, dt * 3);
+            }
+            else 
+            {
+                angle = currentSpeed * rotateSpeed * hAxis;
+            }
+        }
+        else {
+            if (abs(drift) > 1)
+            {
+                angle = CommonHelper::lerp(angle, 0, dt * 3);
+            }
+            else 
+            {
+                angle = 0;
+            }
         }
         // Acceleration
         if (accel > 0.1) {
@@ -68,15 +85,15 @@ void Player::Update(Window* window, GLfloat dt)
             currentSpeed += dt * acceleration * brk;
         }
         // Left bumper
-        if (states.buttons[GLFW_GAMEPAD_BUTTON_LEFT_BUMPER] && angle != 0) // No drifting unless turning some
+        if (states.buttons[GLFW_GAMEPAD_BUTTON_LEFT_BUMPER] && abs(angle) > 1 && currentSpeed < 0) // No drifting unless turning some
         {
-            drift = CommonHelper::lerp(drift, 20.f * angle, dt * 2.0f);
+            drift = CommonHelper::lerp(drift, 20.f * angle, dt * 3.0f);
             rotateSpeed = 0.08;
-            maxSpeed = 30.f;
+            maxSpeed = 25.f;
         }
-        else if(drift)
+        else if(abs(drift) > 0.001)
         {
-            drift = CommonHelper::lerp(drift, 0.0f, dt * 2.0f);
+            drift = CommonHelper::lerp(drift, 0.0f, dt * 3.0f);
             maxSpeed = 20.f;
             rotateSpeed = 0.07;
         }
@@ -107,7 +124,6 @@ void Player::Update(Window* window, GLfloat dt)
     else {
         currentSpeed = 0.f;
     }
-    angle = 0;
 }
 
 glm::mat4 Player::GetModelMatrix()

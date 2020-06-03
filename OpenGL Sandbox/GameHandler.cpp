@@ -43,6 +43,11 @@ void GameHandler::Update(Window* window, PointLight* light, GLfloat dt)
 
         score++;
         printf("Score: %d\n", (int)score);
+
+        if (score >= 10) {
+            printf("Congratulations! It took %d seconds.\n", (int)glfwGetTime());
+            score = 0;
+        }
     }
 
 
