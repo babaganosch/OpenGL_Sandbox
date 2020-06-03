@@ -32,7 +32,7 @@ void main()
     vec3 bitangent = cross(normal, tangent);
     mat3 TBN       = mat3(tangent, bitangent, normal);
     
-    float bias = 0.001;
+    float bias = 0.0001;
     float occlusion = 0.0;
     for(int i = 0; i < kernelSize; ++i)
     {

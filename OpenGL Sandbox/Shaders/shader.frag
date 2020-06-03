@@ -235,7 +235,7 @@ void main()
     
     vec4 finalColour = CalcDirectionalLight();
     finalColour += CalcPointLights();
-    //finalColour += CalcSpotLights();
+    finalColour += CalcSpotLights();
     colour = texture(theTexture, TexCoord) * finalColour;
      
     

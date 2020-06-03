@@ -16,7 +16,7 @@ void main()
 {
     if (showHalfScreenOnly && TexCoords.x > 0.5f)
     {
-        outColour = texture(renderedTexture, TexCoords) * texture(ssaoTexture, TexCoords).r;
+        outColour = texture(renderedTexture, TexCoords);
         return;
     }
     
@@ -49,6 +49,6 @@ void main()
     }
     // Average all of the samples to get the final blur color.
     
-    outColour = color / numSamples;
+    outColour = (color / numSamples) * texture(ssaoTexture, TexCoords).r;
 
 }

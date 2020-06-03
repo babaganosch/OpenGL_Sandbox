@@ -90,6 +90,17 @@ Model blackHawk;
 Model deLorean;
 Model ball;
 
+mat4 tri1_matrix = mat4(1.0f);
+mat4 tri2_matrix = mat4(1.0f);
+mat4 floor_matrix = mat4(1.0f);
+mat4 xwing_matrix = mat4(1.0f);
+mat4 blackHawk_matrix = mat4(1.0f);
+mat4 deLorean_matrix = mat4(1.0f);
+mat4 ball1_matrix = mat4(1.0f);
+mat4 ball2_matrix = mat4(1.0f);
+mat4 ball3_matrix = mat4(1.0f);
+mat4 ball4_matrix = mat4(1.0f);
+
 DirectionalLight mainLight;
 PointLight pointLights[MAX_POINT_LIGHTS];
 SpotLight spotLights[MAX_SPOT_LIGHTS];
@@ -251,39 +262,30 @@ void RenderScene()
 {
     
     // TRI1
-    mat4 model(1.0f);
-    model = translate(model, vec3(0.0f, 0.0f, -2.5f));
-    glUniformMatrix4fv(uniformModel, 1, GL_FALSE, value_ptr(model));
+    glUniformMatrix4fv(uniformModel, 1, GL_FALSE, value_ptr(tri1_matrix));
     brickTexture.UseTexture();
     if (finalRenderStage) shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
     meshList[0]->RenderMesh();
     
     // TRI2
-    model = mat4(1.0f);
-    model = translate(model, vec3(0.0f, 4.0f, -2.5f));
-    glUniformMatrix4fv(uniformModel, 1, GL_FALSE, value_ptr(model));
+    glUniformMatrix4fv(uniformModel, 1, GL_FALSE, value_ptr(tri2_matrix));
     dirtTexture.UseTexture();
     if (finalRenderStage) dullMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
     meshList[1]->RenderMesh();
     
     // FLOOR
-    model = mat4(1.0f);
-    model = translate(model, vec3(0.0f, -2.0f, 0.0f));
-    glUniformMatrix4fv(uniformModel, 1, GL_FALSE, value_ptr(model));
+    glUniformMatrix4fv(uniformModel, 1, GL_FALSE, value_ptr(floor_matrix));
     dirtTexture.UseTexture();
     if (finalRenderStage) dullMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
     meshList[2]->RenderMesh();
 
     // XWING
-    model = mat4(1.0f);
-    model = translate(model, vec3(-7.0f, 0.0f, 10.0f));
-    model = scale(model, vec3(0.006f, 0.006f, 0.006f));
-    glUniformMatrix4fv(uniformModel, 1, GL_FALSE, value_ptr(model));
+    glUniformMatrix4fv(uniformModel, 1, GL_FALSE, value_ptr(xwing_matrix));
     if (finalRenderStage) shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
     xwing.RenderModel();
 
     // BLACKHAWK
-    model = mat4(1.0f);
+    /*
     model = rotate(model, -blackHawkAngle * toRadians, vec3(0.0f, 1.0f, 0.0f));
     model = translate(model, vec3(-7.0f, 2.0f, 0.0f));
     model = scale(model, vec3(0.4f, 0.4f, 0.4f));
@@ -292,31 +294,25 @@ void RenderScene()
     glUniformMatrix4fv(uniformModel, 1, GL_FALSE, value_ptr(model));
     if (finalRenderStage) shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
     blackHawk.RenderModel();
+    */
     
     // DELOREAN
-    model = gameHandler.GetModelMatrix();
-    glUniformMatrix4fv(uniformModel, 1, GL_FALSE, value_ptr(model));
+    glUniformMatrix4fv(uniformModel, 1, GL_FALSE, value_ptr(gameHandler.GetModelMatrix()));
     if (finalRenderStage) shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
     deLorean.RenderModel();
     
     // BALL1
-    model = mat4(1.0f);
-    model = translate(model, vec3(-3.0f, -1.7f, 0.0f));
-    model = scale(model, vec3(0.005f, 0.005f, 0.005f));
-    glUniformMatrix4fv(uniformModel, 1, GL_FALSE, value_ptr(model));
+    glUniformMatrix4fv(uniformModel, 1, GL_FALSE, value_ptr(ball1_matrix));
     if (finalRenderStage) shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
     ball.RenderModel();
     
     // BALL2
-    model = mat4(1.0f);
-    model = translate(model, vec3(-3.0f, -1.7f, 1.25f));
-    model = scale(model, vec3(0.005f, 0.005f, 0.005f));
-    glUniformMatrix4fv(uniformModel, 1, GL_FALSE, value_ptr(model));
+    glUniformMatrix4fv(uniformModel, 1, GL_FALSE, value_ptr(ball2_matrix));
     if (finalRenderStage) dullMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
     ball.RenderModel();
     
     // LIGHTBALL 1 (BLUE)
-    model = mat4(1.0f);
+    mat4 model = mat4(1.0f);
     model = translate(model, blueLightPos);
     model = scale(model, vec3(0.002f, 0.002f, 0.002f));
     glUniformMatrix4fv(uniformModel, 1, GL_FALSE, value_ptr(model));
@@ -459,8 +455,8 @@ void RenderPass(mat4* projectionMatrix, mat4* viewMatrix)
     shaderList[0].SetTexture(1);
     shaderList[0].SetDirectionalShadowMap(2);
     
-    shaderList[0].SetPointLights(pointLights, pointLightCount, 6, 0);
-    shaderList[0].SetSpotLights(spotLights, spotLightCount, 6 + pointLightCount, pointLightCount);
+    shaderList[0].SetPointLights(pointLights, pointLightCount, 3, 0);
+    shaderList[0].SetSpotLights(spotLights, spotLightCount, 3 + pointLightCount, pointLightCount);
     
     // Let one spotlight follow the camera
     glm::vec3 handPosition = cameraPos;
@@ -522,8 +518,21 @@ int main() {
     xwing = Model();
     xwing.LoadModel("Models/x-wing.obj");
     
+    tri1_matrix = translate(tri1_matrix, vec3(0.0f, 0.0f, -2.5f));
+    tri2_matrix = translate(tri2_matrix, vec3(0.0f, 4.0f, -2.5f));
+    floor_matrix = translate(floor_matrix, vec3(0.0f, -2.0f, 0.0f));
+    xwing_matrix = translate(xwing_matrix, vec3(-7.0f, 0.0f, 10.0f));
+    xwing_matrix = scale(xwing_matrix, vec3(0.006f, 0.006f, 0.006f));
+    ball1_matrix = translate(ball1_matrix, vec3(-3.0f, -1.7f, 0.0f));
+    ball1_matrix = scale(ball1_matrix, vec3(0.005f, 0.005f, 0.005f));
+    ball2_matrix = translate(ball2_matrix, vec3(-3.0f, -1.7f, 1.25f));
+    ball2_matrix = scale(ball2_matrix, vec3(0.005f, 0.005f, 0.005f));
+    
+    
+    /*
     blackHawk = Model();
     blackHawk.LoadModel("Models/uh60.obj");
+    */
     
     deLorean = Model();
     deLorean.LoadModel("Models/DeLorean.obj");
@@ -592,12 +601,12 @@ int main() {
     glUniform1i(ssaoShader.GetNoiseTextureLocation(), 3);
     glUniform1f(ssaoShader.GetScreenWidthLocation(), mainWindow.getBufferWidth());
     glUniform1f(ssaoShader.GetScreenHeightLocation(), mainWindow.getBufferHeight());
+    glUniform3fv(ssaoShader.GetSSAOsamplesLocation(), hemisphereSamples, value_ptr(*renderer.GetSSAOsamples()));
     glUseProgram(0);
     
     GLuint uniformCameraPosSSAO = ssaoShader.GetCameraPositionLocation();
     GLuint uniformCameraDirSSAO = ssaoShader.GetCameraDirectionLocation();
     GLuint uniformViewProjSSAO = ssaoShader.GetViewProjectionLocation();
-    GLuint uniformSamplesSSAO = ssaoShader.GetSSAOsamplesLocation();
     
     while ( !mainWindow.getShouldClose() )
     {
@@ -652,7 +661,6 @@ int main() {
             camera.setTarget(gameHandler.GetPlayer());
         }
         
-        
         /* PrePass for deferred rendering */
         gBuffer.Render(&projection, &viewMatrix);
         uniformModel = prePassShader.GetModelLocation();
@@ -665,7 +673,6 @@ int main() {
         glUniform3f(uniformCameraPosSSAO, cameraPos.x, cameraPos.y, cameraPos.z);
         glUniform3f(uniformCameraDirSSAO, cameraDir.x, cameraDir.y, cameraDir.z);
         glUniformMatrix4fv(uniformViewProjSSAO, 1, GL_FALSE, value_ptr(projectionView));
-        glUniform3fv(uniformSamplesSSAO, hemisphereSamples, value_ptr(*renderer.GetSSAOsamples()));
         screenQuad.RenderQuad();
         renderer.Reset();
         glUseProgram(0);
