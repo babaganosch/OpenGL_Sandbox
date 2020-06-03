@@ -27,18 +27,20 @@ public:
     void Init(unsigned int width, unsigned int height);
     void RenderToTexture();
     void RenderSSAO(GLuint positionTexture, GLuint normalTexture);
+    void RenderBlurredSSAO();
     void Reset();
     void Clear();
     
     GLuint GetTexture() { return colorTexture; }
-    GLuint GetSSAOTexture() { return ssaoTexture; }
+    GLuint GetSSAOTexture() { return ssaoBlurredTexture; }
     GLuint GetNoiseTexture() { return noiseTexture; }
     glm::vec3* GetSSAOsamples() { return samples; }
     
 private:
-    GLuint FBO, RBO;
+    GLuint FBO, RBO, ssaoBlurFBO;
     GLuint ssaoFBO;
     GLuint colorTexture, noiseTexture, ssaoTexture;
+    GLuint ssaoBlurredTexture;
     int width;
     int height;
     

@@ -124,13 +124,36 @@ void Renderer::Init(unsigned int w, unsigned int h)
             }
         glBindTexture(GL_TEXTURE_2D, 0);
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    
+    
+    // SSAO BLUR
+    glGenFramebuffers(1, &ssaoBlurFBO);
+    glBindFramebuffer(GL_FRAMEBUFFER, ssaoBlurFBO);
+        glGenTextures(1, &ssaoBlurredTexture);
+        glBindTexture(GL_TEXTURE_2D, ssaoBlurredTexture);
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, width, height, 0, GL_RED, GL_FLOAT, nullptr);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+            glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, ssaoBlurredTexture, 0);
+            
+        glBindTexture(GL_TEXTURE_2D, 0);
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 void Renderer::RenderToTexture()
 {
     glBindFramebuffer(GL_FRAMEBUFFER, FBO);
     glViewport(0, 0, width, height);
-    Clear();
+    glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+}
+
+void Renderer::RenderBlurredSSAO()
+{
+    glBindFramebuffer(GL_FRAMEBUFFER, ssaoBlurFBO);
+    glViewport(0, 0, width, height);
+    glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+    glActiveTexture(GL_TEXTURE1);
+    glBindTexture(GL_TEXTURE_2D, ssaoTexture);
 }
 
 void Renderer::RenderSSAO(GLuint positionTexture, GLuint normalTexture)

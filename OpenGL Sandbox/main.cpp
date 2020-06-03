@@ -63,6 +63,7 @@ Shader motionBlurShader;
 Shader chrAbrShader;
 Shader prePassShader;
 Shader ssaoShader;
+Shader ssaoBlurShader;
 
 Renderer renderer;
 GBuffer gBuffer;
@@ -256,6 +257,9 @@ void CreateShaders()
     
     ssaoShader = Shader();
     ssaoShader.CreateFromFiles("Shaders/SSAO/SSAOshader.vert", "Shaders/SSAO/SSAOshader.frag");
+    
+    ssaoBlurShader = Shader();
+    ssaoBlurShader.CreateFromFiles("Shaders/SSAO/SSAOshader.vert", "Shaders/SSAO/SSAOblurShader.frag");
 }
 
 void RenderScene()
@@ -297,6 +301,7 @@ void RenderScene()
     */
     
     // DELOREAN
+    
     glUniformMatrix4fv(uniformModel, 1, GL_FALSE, value_ptr(gameHandler.GetModelMatrix()));
     if (finalRenderStage) shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
     deLorean.RenderModel();
@@ -676,6 +681,13 @@ int main() {
         screenQuad.RenderQuad();
         renderer.Reset();
         glUseProgram(0);
+        
+        renderer.RenderBlurredSSAO();
+        ssaoBlurShader.UseShader();
+        glUniform1i(ssaoBlurShader.GetTheTextureLocation(), 1);
+        screenQuad.RenderQuad();
+        renderer.Reset();
+        glUseProgram(0);
             
         /* Directional ShadowMap Pass */
         DirectionalShadowMapPass(&mainLight);
@@ -702,10 +714,16 @@ int main() {
         /* Post FX */
         PostProcessingPass(&projectionView, &oldViewProjectionMatrix);
         
+        GLfloat theTime = glfwGetTime();
+        
+        renderer.Reset();
         glUseProgram(0);
         // Swap buffers
         mainWindow.swapBuffers();
-        
+        /*
+        printf("%f\n", (glfwGetTime() - theTime) * 1000.0f);
+        theTime = glfwGetTime();
+        */
     }
     
     glfwTerminate( );

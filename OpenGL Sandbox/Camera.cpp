@@ -84,7 +84,7 @@ glm::mat4 Camera::calculateViewMatrix()
     if (followingTarget)
     {
         glm::vec3 targetPosition = target->GetModelPosition();
-        return glm::lookAt(position, targetPosition, glm::vec3(0.0f, 1.0f, 0.0f));
+        return glm::lookAt(position, targetPosition, worldUp);
     } else {
         return glm::lookAt(position, position + front, up);
     }

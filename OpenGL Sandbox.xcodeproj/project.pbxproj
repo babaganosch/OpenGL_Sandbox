@@ -104,6 +104,7 @@
 		46E6391824863D03004142DA /* passthrough.vert */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; name = passthrough.vert; path = Shaders/Passthrough/passthrough.vert; sourceTree = "<group>"; };
 		46E79C5D2486E6A2004B1C91 /* SSAOshader.vert */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; name = SSAOshader.vert; path = Shaders/SSAO/SSAOshader.vert; sourceTree = "<group>"; };
 		46E79C5E2486E6A2004B1C91 /* SSAOshader.frag */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; name = SSAOshader.frag; path = Shaders/SSAO/SSAOshader.frag; sourceTree = "<group>"; };
+		46E79C5F2487FE34004B1C91 /* SSAOblurShader.frag */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; name = SSAOblurShader.frag; path = Shaders/SSAO/SSAOblurShader.frag; sourceTree = "<group>"; };
 		46F9E3B8247EAD9D00DB0808 /* ParticleSystem.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ParticleSystem.cpp; sourceTree = "<group>"; };
 		46F9E3B9247EAD9D00DB0808 /* ParticleSystem.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = ParticleSystem.hpp; sourceTree = "<group>"; };
 		46F9E3BB247EAEA600DB0808 /* Particle.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Particle.cpp; sourceTree = "<group>"; };
@@ -266,6 +267,7 @@
 		46E79C5C2486E68B004B1C91 /* SSAO */ = {
 			isa = PBXGroup;
 			children = (
+				46E79C5F2487FE34004B1C91 /* SSAOblurShader.frag */,
 				46E79C5D2486E6A2004B1C91 /* SSAOshader.vert */,
 				46E79C5E2486E6A2004B1C91 /* SSAOshader.frag */,
 			);
