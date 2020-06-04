@@ -60,7 +60,6 @@ Shader omniShadowShader;
 Shader particleShader;
 Shader passthroughShader;
 Shader motionBlurShader;
-Shader chrAbrShader;
 Shader prePassShader;
 Shader ssaoShader;
 Shader ssaoBlurShader;
@@ -249,9 +248,6 @@ void CreateShaders()
     
     motionBlurShader = Shader();
     motionBlurShader.CreateFromFiles("Shaders/MotionBlur/motionBlur.vert", "Shaders/MotionBlur/motionBlur.frag");
-    
-    chrAbrShader = Shader();
-    chrAbrShader.CreateFromFiles("Shaders/CHRABR/passthrough.vert", "Shaders/CHRABR/chromatic_aberration.frag");
     
     prePassShader = Shader();
     prePassShader.CreateFromFiles("Shaders/DeferredRendering/prePass.vert", "Shaders/DeferredRendering/prePass.frag");

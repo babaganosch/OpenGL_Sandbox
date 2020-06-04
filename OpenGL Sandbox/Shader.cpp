@@ -393,10 +393,10 @@ void Shader::CompileProgram()
     for (GLuint i = 0; i < MAX_POINT_LIGHTS + MAX_SPOT_LIGHTS; i++)
     {
         char locBuff[100] = { '\0' };
-        snprintf(locBuff, sizeof(locBuff), "omniShadowMaps[%d].shadowMap", i);
+        snprintf(locBuff, sizeof(locBuff), "omniShadowMap[%d]", i);
         uniformOmniShadowMap[i].uniformShadowMap = glGetUniformLocation(shaderID, locBuff);
         
-        snprintf(locBuff, sizeof(locBuff), "omniShadowMaps[%d].farPlane", i);
+        snprintf(locBuff, sizeof(locBuff), "omniFarPlane[%d]", i);
         uniformOmniShadowMap[i].uniformFarPlane = glGetUniformLocation(shaderID, locBuff);
     }
     

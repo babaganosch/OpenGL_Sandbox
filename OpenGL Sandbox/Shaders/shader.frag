@@ -39,13 +39,13 @@ struct SpotLight
     vec3 direction;
     float edge;
 };
-
+/*
 struct OmniShadowMap
 {
     samplerCube shadowMap;
     float farPlane;
 };
-
+*/
 struct Material
 {
     float specularIntensity;
@@ -62,7 +62,9 @@ uniform SpotLight spotLights[MAX_SPOT_LIGHTS];
 
 uniform sampler2D theTexture; // GL_TEXTURE0
 uniform sampler2D directionalShadowMap;
-uniform OmniShadowMap omniShadowMaps[MAX_POINT_LIGHTS + MAX_SPOT_LIGHTS];
+//uniform OmniShadowMap omniShadowMaps[MAX_POINT_LIGHTS + MAX_SPOT_LIGHTS];
+uniform samplerCube omniShadowMap[MAX_POINT_LIGHTS + MAX_SPOT_LIGHTS];
+uniform float omniFarPlane[MAX_POINT_LIGHTS + MAX_SPOT_LIGHTS];
 
 uniform Material material;
 
@@ -89,12 +91,24 @@ float CalcOmniShadowFactor(PointLight light, int shadowIndex)
     int samples = 20;
     
     float viewDistance = length(eyePosition - FragPos);
-    float diskRadius = (1.0f + (viewDistance / omniShadowMaps[shadowIndex].farPlane )) / 25.0f;
+    float diskRadius = (1.0f + (viewDistance / omniFarPlane[shadowIndex] )) / 25.0f;
     
     for (int i = 0; i < samples; i++)
     {
-        float closest = texture(omniShadowMaps[shadowIndex].shadowMap, fragToLight + sampleOffsetDirections[i] * diskRadius).r;
-        closest *= omniShadowMaps[shadowIndex].farPlane;
+        float closest = 0.0f;
+        vec3 pos = fragToLight + sampleOffsetDirections[i] * diskRadius;
+        
+        // LOL!
+             if (shadowIndex == 0 ) closest = texture(omniShadowMap[0], pos).r;
+        else if (shadowIndex == 1 ) closest = texture(omniShadowMap[1], pos).r;
+        else if (shadowIndex == 2 ) closest = texture(omniShadowMap[2], pos).r;
+        else if (shadowIndex == 3 ) closest = texture(omniShadowMap[3], pos).r;
+        else if (shadowIndex == 4 ) closest = texture(omniShadowMap[4], pos).r;
+        else if (shadowIndex == 5 ) closest = texture(omniShadowMap[5], pos).r;
+        
+        //closest = texture(omniShadowMap[shadowIndex], pos).r;
+        
+        closest *= omniFarPlane[shadowIndex];
         if (current - bias > closest)
         {
             shadow += 1.0f;
@@ -237,9 +251,5 @@ void main()
     finalColour += CalcPointLights();
     finalColour += CalcSpotLights();
     colour = texture(theTexture, TexCoord) * finalColour;
-     
-    
-    //vec2 mapCoord = 2.0 * TexCoord - 1.0;
-    //colour = texture(omniShadowMaps[1].shadowMap, vec3(1.0, mapCoord.xy));
      
 }
