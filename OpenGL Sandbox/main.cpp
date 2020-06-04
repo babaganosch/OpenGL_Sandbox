@@ -568,7 +568,15 @@ int main() {
                                 0.3f, 0.1f, 0.1f);
     pointLightCount++;
     
-    /*
+    pointLights[2] = PointLight(512, 512,
+                                0.01f, 100.0f,
+                                1.0f, 0.0f, 0.0f,   // Red
+                                0.3f, 0.9f,
+                                4.0f, 5.0f, -3.0f,
+                                0.3f, 0.1f, 0.08f);
+    pointLightCount++;
+    
+    
     spotLights[0] = SpotLight(512, 512,
                               0.01f, 1000.0f,
                               1.0f, 1.0f, 1.0f,
@@ -578,7 +586,7 @@ int main() {
                               1.0f, 0.0f, 0.0f,
                               28.0f);
     spotLightCount++;
-    
+    /*
     spotLights[1] = SpotLight(512, 512,
                               0.01f, 1000.0f,
                               1.0f, 1.0f, 1.0f,
