@@ -99,14 +99,15 @@ float CalcOmniShadowFactor(PointLight light, int shadowIndex)
         vec3 pos = fragToLight + sampleOffsetDirections[i] * diskRadius;
         
         // LOL!
+        /*
              if (shadowIndex == 0 ) closest = texture(omniShadowMap[0], pos).r;
         else if (shadowIndex == 1 ) closest = texture(omniShadowMap[1], pos).r;
         else if (shadowIndex == 2 ) closest = texture(omniShadowMap[2], pos).r;
         else if (shadowIndex == 3 ) closest = texture(omniShadowMap[3], pos).r;
         else if (shadowIndex == 4 ) closest = texture(omniShadowMap[4], pos).r;
         else if (shadowIndex == 5 ) closest = texture(omniShadowMap[5], pos).r;
-        
-        //closest = texture(omniShadowMap[shadowIndex], pos).r;
+        */
+        closest = texture(omniShadowMap[shadowIndex], pos).r;
         
         closest *= omniFarPlane[shadowIndex];
         if (current - bias > closest)
