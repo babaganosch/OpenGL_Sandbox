@@ -106,7 +106,7 @@ void Player::Update(Window* window, GLfloat dt)
     glm::mat4 R = glm::rotate(glm::radians(angle), glm::vec3(0.0f, 1.0f, 0.0f));
     glm::mat4 T = R * glm::translate(glm::vec3(0.0f, 0.0f, currentSpeed));
 
-    glm::mat4 Cam = model * glm::translate(glm::vec3(0.0f, 1000.0f, 2000.0f));
+    glm::mat4 Cam = model * glm::translate(glm::vec3(0.0f, 600.0f, 1200.0f));
 
     cameraPos = Cam[3];
     
