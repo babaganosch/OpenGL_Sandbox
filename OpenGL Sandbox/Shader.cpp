@@ -375,6 +375,7 @@ void Shader::CompileProgram()
     uniformPreviousViewProjectionMatrix = glGetUniformLocation(shaderID, "g_previousViewProjectionMatrix");
     uniformMotionBlurTexture0 = glGetUniformLocation(shaderID, "renderedTexture");
     uniformMotionBlurTexture1 = glGetUniformLocation(shaderID, "depthTexture");
+    uniformChromatic = glGetUniformLocation(shaderID, "chromatic");
     
     
     /* OMNI SHADOW */

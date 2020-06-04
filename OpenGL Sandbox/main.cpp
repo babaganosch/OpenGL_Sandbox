@@ -117,6 +117,7 @@ bool activeOmniShadowPass = false;
 bool activeMotionBlur = false;
 bool activeParticles  = false;
 bool showHalfScreenOnly = false;
+bool showChromaticAbr = false;
 
 vec3 blueLightPos  = vec3(0.0f);
 vec3 scoreLightPos = vec3(-4.0f, 0.0f, 3.0f);
@@ -405,6 +406,7 @@ void PostProcessingPass(mat4* projectionView, mat4* oldViewProjectionMatrix)
         glActiveTexture(GL_TEXTURE2);
         glBindTexture(GL_TEXTURE_2D, gBuffer.GetDepthTexture());
         glUniform1i(motionBlurShader.GetShowHalfScreenOnlyLocation(), showHalfScreenOnly);
+        glUniform1i(motionBlurShader.GetChromaticLocation(), showChromaticAbr);
         
         glUniform1i(motionBlurShader.GetSSAOtextureLocation(), 3);
         glActiveTexture(GL_TEXTURE3);
@@ -653,6 +655,10 @@ int main() {
         if (mainWindow.getKeys()[GLFW_KEY_I]) {
             mainWindow.getKeys()[GLFW_KEY_I] = false;
             showHalfScreenOnly = !showHalfScreenOnly;
+        }
+        if (mainWindow.getKeys()[GLFW_KEY_U]) {
+            mainWindow.getKeys()[GLFW_KEY_U] = false;
+            showChromaticAbr = !showChromaticAbr;
         }
         if (mainWindow.getKeys()[GLFW_KEY_K]) {
             mainWindow.getKeys()[GLFW_KEY_K] = false;

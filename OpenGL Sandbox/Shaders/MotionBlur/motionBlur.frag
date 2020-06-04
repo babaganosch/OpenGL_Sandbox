@@ -6,6 +6,7 @@ out vec4 outColour;
 uniform mat4 g_previousViewProjectionMatrix;
 uniform mat4 g_ViewProjectionInverseMatrix;
 uniform bool showHalfScreenOnly = false;
+uniform bool chromatic = false;
 uniform sampler2D renderedTexture;
 uniform sampler2D depthTexture;
 uniform sampler2D ssaoTexture;
@@ -39,11 +40,24 @@ void main()
 
     // Get the initial color at this pixel.w
     vec4 color = texture(renderedTexture, TexCoords);
+    vec2 chrDist = vec2(0.0f);
+    if (chromatic)
+    {
+        chrDist = vec2(0.015, 0.0f) * (TexCoords - 0.5f) * 2.0f;
+        color.rgb  = texture( renderedTexture, TexCoords - chrDist).rgb    * vec3(1.0, 0.5, 0.0) +
+                     texture( renderedTexture, TexCoords + chrDist).rgb    * vec3(0.0, 0.5, 1.0);
+    }
+    
     vec2 texCoord = TexCoords;
     texCoord += velocity;
     for(int i = 1; i < numSamples; ++i, texCoord += velocity) {
         // Sample the color buffer along the velocity vector.
         vec4 currentColor = texture(renderedTexture, texCoord);
+        if (chromatic)
+        {
+            currentColor.rgb =  texture( renderedTexture, texCoord - chrDist).rgb    * vec3(1.0, 0.5, 0.0) +
+                                texture( renderedTexture, texCoord + chrDist).rgb    * vec3(0.0, 0.5, 1.0);
+        }
         // Add the current color to our color sum.
         color += currentColor;
     }

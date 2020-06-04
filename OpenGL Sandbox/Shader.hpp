@@ -55,6 +55,7 @@ public:
     GLuint GetViewProjectionInverseMatrix() { return uniformViewProjectionInverseMatrix; }
     GLuint GetPreviousViewProjectionMatrix() { return uniformPreviousViewProjectionMatrix; }
     GLuint GetShowHalfScreenOnlyLocation() { return uniformShowHalfScreenOnly; }
+    GLuint GetChromaticLocation() { return uniformChromatic; }
     
     GLuint GetPositionTextureLocation() { return uniformPositionTexture; }
     GLuint GetNormalTextureLocation() { return uniformNormalTexture; }
@@ -93,11 +94,10 @@ private:
     GLuint uniformLightMatrices[6];
     GLuint uniformUseOmniShadow;
     
-    GLuint uniformShowHalfScreenOnly;
-    
     // Motion blur
     GLuint uniformViewProjectionInverseMatrix, uniformPreviousViewProjectionMatrix;
     GLuint uniformMotionBlurTexture0, uniformMotionBlurTexture1;
+    GLuint uniformShowHalfScreenOnly, uniformChromatic;
     
     // SSAO
     GLuint uniformPositionTexture, uniformNormalTexture, uniformNoiseTexture;

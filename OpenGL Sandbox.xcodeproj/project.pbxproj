@@ -140,8 +140,8 @@
 		460ABE8C2481832100D71454 /* CHRABR */ = {
 			isa = PBXGroup;
 			children = (
-				460ABE8D2481836E00D71454 /* chromatic_aberration.frag */,
 				460ABE8E2481836F00D71454 /* passthrough.vert */,
+				460ABE8D2481836E00D71454 /* chromatic_aberration.frag */,
 			);
 			name = CHRABR;
 			sourceTree = "<group>";
