@@ -640,6 +640,7 @@ int main() {
         mat4 projectionView = projection * viewMatrix;
         vec3 cameraPos = camera.getCameraPosition();
         vec3 cameraDir = camera.getCameraDirection();
+        camera.setPlayerPos(gameHandler.GetPlayerPos());
         
         if (mainWindow.getKeys()[GLFW_KEY_P]) {
             mainWindow.getKeys()[GLFW_KEY_P] = false;

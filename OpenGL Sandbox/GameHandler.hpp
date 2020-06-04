@@ -26,6 +26,7 @@ public:
     void Update(Window* window, PointLight* light, GLfloat dt);
     glm::mat4 GetModelMatrix();
     Player* GetPlayer() { return &player; }
+    glm::vec3 GetPlayerPos() { return player.GetCameraPosition(); }
 
 private:
     Player player;

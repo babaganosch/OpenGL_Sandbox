@@ -31,6 +31,7 @@ public:
     glm::vec3 getCameraDirection();
     
     void setTarget(Player* pl);
+    void setPlayerPos(glm::vec3 pos);
     
 private:
     glm::vec3 position;
@@ -38,6 +39,7 @@ private:
     glm::vec3 up;
     glm::vec3 right;
     glm::vec3 worldUp;
+    glm::vec3 playerPos;
     
     bool followingTarget;
     Player* target;

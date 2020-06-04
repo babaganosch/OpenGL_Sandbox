@@ -21,6 +21,8 @@ Player::Player()
     glm::mat4 R = glm::rotate(glm::radians(angle), glm::vec3(0.0f, 1.0f, 0.0f));
     glm::mat4 T = R * glm::translate(glm::vec3(3.0f, -2.0f, 4.0f)) * glm::scale(glm::vec3(0.005f, 0.005f, 0.005f));
 
+    cameraPos = glm::vec3(0.0f);
+    
     model *= T;
 }
 
@@ -103,6 +105,9 @@ void Player::Update(Window* window, GLfloat dt)
 
     glm::mat4 R = glm::rotate(glm::radians(angle), glm::vec3(0.0f, 1.0f, 0.0f));
     glm::mat4 T = R * glm::translate(glm::vec3(0.0f, 0.0f, currentSpeed));
+    
+    glm::mat4 Cam = glm::translate(glm::vec3(0.0f, 3.0f, 7.0f)) * model;
+    cameraPos = Cam[3];
     
     model *= T;
     if (currentSpeed > maxSpeed)

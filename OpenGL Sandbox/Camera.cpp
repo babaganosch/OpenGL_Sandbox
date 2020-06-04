@@ -25,6 +25,7 @@ Camera::Camera(glm::vec3 startPosition, glm::vec3 startUp, GLfloat startYaw, GLf
     turnSpeed = startTurnSpeed;
     
     followingTarget = false;
+    playerPos = glm::vec3(0.0f);
     
     update();
 }
@@ -83,7 +84,9 @@ glm::mat4 Camera::calculateViewMatrix()
 {
     if (followingTarget)
     {
+        position = playerPos;
         glm::vec3 targetPosition = target->GetModelPosition();
+        front = targetPosition - position;
         return glm::lookAt(position, targetPosition, worldUp);
     } else {
         return glm::lookAt(position, position + front, up);
@@ -98,6 +101,11 @@ glm::vec3 Camera::getCameraPosition()
 glm::vec3 Camera::getCameraDirection()
 {
     return glm::normalize(front);
+}
+
+void Camera::setPlayerPos(glm::vec3 pos)
+{
+    playerPos = pos;
 }
 
 void Camera::update()

@@ -25,10 +25,12 @@ public:
     void Update(Window* window, GLfloat dt);
     glm::mat4 GetModelMatrix();
     glm::vec3 GetModelPosition();
+    glm::vec3 GetCameraPosition() { return cameraPos; }
     
 private:
     glm::mat4 model;
     glm::vec3 position, scale;
+    glm::vec3 cameraPos;
     
     GLfloat angle, maxSpeed, rotateSpeed, acceleration, currentSpeed, drift;
 };
