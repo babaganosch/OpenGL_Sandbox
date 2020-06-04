@@ -63,9 +63,9 @@ void Player::Update(Window* window, GLfloat dt)
             {
                 angle = CommonHelper::lerp(angle, currentSpeed * rotateSpeed * hAxis, dt * 3);
             }
-            else 
+            else
             {
-                angle = currentSpeed * rotateSpeed * hAxis;
+                angle = CommonHelper::lerp(angle, currentSpeed * rotateSpeed * hAxis, dt * 7);
             }
         }
         else {
@@ -73,9 +73,9 @@ void Player::Update(Window* window, GLfloat dt)
             {
                 angle = CommonHelper::lerp(angle, 0, dt * 3);
             }
-            else 
+            else
             {
-                angle = 0;
+                angle = CommonHelper::lerp(angle, 0, dt * 7);
             }
         }
         // Acceleration
@@ -105,11 +105,13 @@ void Player::Update(Window* window, GLfloat dt)
 
     glm::mat4 R = glm::rotate(glm::radians(angle), glm::vec3(0.0f, 1.0f, 0.0f));
     glm::mat4 T = R * glm::translate(glm::vec3(0.0f, 0.0f, currentSpeed));
-    
-    glm::mat4 Cam = glm::translate(glm::vec3(0.0f, 3.0f, 7.0f)) * model;
+
+    glm::mat4 Cam = model * glm::translate(glm::vec3(0.0f, 1000.0f, 2000.0f));
+
     cameraPos = Cam[3];
     
     model *= T;
+
     if (currentSpeed > maxSpeed)
     {
         currentSpeed -= dt * acceleration * 1.1;
